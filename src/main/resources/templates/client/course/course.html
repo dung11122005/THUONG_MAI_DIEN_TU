@@ -211,18 +211,53 @@
                         ></span>
                       </div>
                     </div>
-                    <a
-                      th:href="@{'/course/detail/' + ${course.id}}"
-                      th:classappend="${course.isFree} ? ' green-btn border-btn border-btn2' : ' border-btn border-btn2'"
+                    <!-- ACTIONS: Xem chi tiết (70%) + Thêm vào giỏ hàng (30%) -->
+                    <div
+                      class="course-action-row"
+                      style="
+                        display: flex;
+                        gap: 8px;
+                        margin-top: 12px;
+                        flex-wrap: wrap;
+                      "
                     >
-                      Find out more
-                    </a>
-                    <a
-                      th:href="@{'/course/detail/' + ${course.id}}"
-                      th:classappend="${course.isFree} ? ' green-btn border-btn border-btn2' : ' border-btn border-btn2'"
-                    >
-                      Find out more
-                    </a>
+                      <!-- Xem chi tiết -->
+                      <a
+                        th:href="@{'/course/detail/' + ${course.id}}"
+                        th:classappend="${course.isFree} ? ' green-btn border-btn border-btn2' : ' border-btn border-btn2'"
+                        class="btn-detail"
+                        style="
+                          flex: 7;
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          min-width: 0;
+                          padding: 10px 12px;
+                          text-align: center;
+                        "
+                      >
+                        <span>Xem chi tiết</span>
+                      </a>
+
+                      <!-- Thêm vào giỏ hàng (chỉ hiện khi không free) -->
+                      <a
+                        th:if="${!course.isFree}"
+                        th:href="@{'/cart/add/' + ${course.id}}"
+                        class="btn-cart border-btn border-btn2"
+                        style="
+                          flex: 3;
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          min-width: 0;
+                          padding: 10px 12px;
+                          text-align: center;
+                        "
+                        title="Thêm vào giỏ hàng"
+                      >
+                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>

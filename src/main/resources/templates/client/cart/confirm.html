@@ -108,116 +108,131 @@
     <div th:replace="client/layout/header"></div>
     <!-- Header End -->
     <main>
-      <section
-        class="slider-area"
-        style="background-color: #6c5ce7; padding: 10px 0"
-      >
+      <section class="py-5">
         <div class="container">
-          <div class="row">
-            <div class="col-md-12 text-center">
-              <h1
-                style="
-                  font-weight: 800;
-                  color: white;
-                  font-size: 48px;
-                  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
-                "
-              >
-                Giỏ hàng của bạn
-              </h1>
-              <nav aria-label="breadcrumb">
-                <ol
-                  class="breadcrumb justify-content-center"
-                  style="background-color: transparent"
-                >
-                  <li class="breadcrumb-item">
-                    <a href="/" style="color: #f1f1f1">Home</a>
-                  </li>
-                  <li
-                    class="breadcrumb-item active"
-                    aria-current="page"
-                    style="color: #fff"
-                  >
-                    Giỏ hàng
-                  </li>
-                </ol>
-              </nav>
-            </div>
-          </div>
-        </div>
-      </section>
+          <h2 class="text-center mb-4">Xác nhận khóa học đã chọn</h2>
 
-      <div class="services-area services-area2 section-padding40">
-        <div class="container">
-          <!-- Nếu giỏ trống -->
-          <div th:if="${#lists.isEmpty(cart.items)}" class="text-center">
-            <h1 class="text-danger">Giỏ hàng của bạn hiện đang trống!</h1>
+          <!-- Thông báo lỗi nếu không có khóa học -->
+          <div th:if="${error}" class="alert alert-warning text-center">
+            <strong th:text="${error}"></strong>
           </div>
 
-          <!-- Danh sách khóa học trong giỏ -->
-          <div class="row" th:if="${!#lists.isEmpty(cart.items)}">
-            <div class="col-lg-12">
-              <table class="table table-bordered">
+          <form th:action="@{/cart/purchase}" method="post">
+            <!-- Bảng khóa học -->
+            <div
+              th:if="${!#lists.isEmpty(selectedCourses)}"
+              class="table-responsive"
+            >
+              <table class="table table-bordered align-middle text-center">
                 <thead class="table-light">
                   <tr>
-                    <th>Khóa học</th>
-                    <th>Giá</th>
-                    <th>Ngày thêm</th>
-                    <th>Hành động</th>
+                    <th style="width: 60px">#</th>
+                    <th style="min-width: 300px">Khóa học</th>
+                    <th style="width: 180px">Giá</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr th:each="item : ${cart.items}">
-                    <td>
-                      <a th:href="@{'/course/detail/' + ${item.course.id}}">
+                  <tr th:each="course, iterStat : ${selectedCourses}">
+                    <td th:text="${iterStat.index + 1}" class="fw-bold"></td>
+
+                    <td class="text-start">
+                      <div class="d-flex align-items-center gap-3">
                         <img
-                          th:src="@{/uploads/images/avatarcourses/{img}(img=${item.course.thumbnail})}"
+                          th:src="@{/uploads/images/avatarcourses/{img}(img=${course.thumbnail})}"
                           alt="Course Image"
                           style="
-                            width: 80px;
-                            height: 60px;
+                            width: 90px;
+                            height: 65px;
                             object-fit: cover;
-                            margin-right: 10px;
+                            border-radius: 8px;
                           "
                         />
-                        <span th:text="${item.course.name}"></span>
-                      </a>
+                        <div>
+                          <p
+                            th:text="${course.name}"
+                            class="mb-1 fw-bold fs-5"
+                          ></p>
+                          <small
+                            th:text="${course.teacher.fullName}"
+                            class="text-muted"
+                          ></small>
+                        </div>
+                      </div>
+                      <!-- input ẩn -->
+                      <input
+                        type="hidden"
+                        name="courseIds"
+                        th:value="${course.id}"
+                      />
                     </td>
+
                     <td>
                       <span
-                        th:if="${item.course.isFree}"
-                        th:text="'Free'"
-                      ></span>
-                      <span
-                        th:unless="${item.course.isFree}"
-                        th:text="${#numbers.formatDecimal(item.course.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"
-                      ></span>
-                    </td>
-                    <td
-                      th:text="${#dates.format(item.addedAt, 'dd/MM/yyyy HH:mm')}"
-                    ></td>
-                    <td>
-                      <form
-                        th:action="@{/cart/remove/{id}(id=${item.course.id})}"
-                        method="post"
+                        th:if="${course.isFree}"
+                        class="badge bg-success fs-6"
+                        >Free</span
                       >
-                        <button type="submit" class="btn btn-danger btn-sm">
-                          Xóa
-                        </button>
-                      </form>
+                      <span
+                        th:unless="${course.isFree}"
+                        th:text="${#numbers.formatDecimal(course.price,0,'COMMA',0,'POINT')} + ' VNĐ'"
+                        class="fw-bold fs-5 text-danger"
+                      ></span>
                     </td>
                   </tr>
                 </tbody>
-              </table>
 
-              <!-- Nút thanh toán -->
-              <div class="text-end mt-3">
-                <a href="/cart/checkout" class="btn btn-success">Thanh toán</a>
+                <!-- Tổng tiền -->
+                <tfoot>
+                  <tr class="table-light">
+                    <td colspan="2" class="text-end fw-bold fs-5">
+                      Tổng cộng:
+                    </td>
+                    <td class="fw-bold fs-5 text-primary">
+                      <span
+                        th:text="${#numbers.formatDecimal(totalPrice,0,'COMMA',0,'POINT')} + ' VNĐ'"
+                      ></span>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <!-- Chọn hình thức thanh toán -->
+            <div class="mb-4">
+              <label class="form-label fw-bold"
+                >Chọn phương thức thanh toán:</label
+              ><br />
+              <div class="form-check">
+                <input
+                  class="form-check-input payment-option"
+                  type="radio"
+                  name="paymentMethod"
+                  id="paypal"
+                  value="PAYPAL"
+                  checked
+                />
+                <label class="form-check-label" for="paypal">PayPal</label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input payment-option"
+                  type="radio"
+                  name="paymentMethod"
+                  id="vnpay"
+                  value="VNPAY"
+                />
+                <label class="form-check-label" for="vnpay">VNPAY</label>
               </div>
             </div>
-          </div>
+
+            <div class="text-end">
+              <button type="submit" class="btn btn-success btn-lg w-100">
+                Xác nhận và thanh toán
+              </button>
+            </div>
+          </form>
         </div>
-      </div>
+      </section>
     </main>
 
     <footer>

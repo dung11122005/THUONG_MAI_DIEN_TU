@@ -22,4 +22,6 @@ public interface CourseRepository extends JpaRepository<Course, Long>, JpaSpecif
     Page<Course> findByTeacherId(Long id, Pageable pageable);
 
     Course findById(long id);
+
+    List<Course> findByIdIn(List<Long> ids);
 }

@@ -108,6 +108,7 @@
     <div th:replace="client/layout/header"></div>
     <!-- Header End -->
     <main>
+      <!-- Slider / Header Area -->
       <section
         class="slider-area"
         style="background-color: #6c5ce7; padding: 10px 0"
@@ -149,7 +150,16 @@
 
       <div class="services-area services-area2 section-padding40">
         <div class="container">
-          <!-- Nếu giỏ trống -->
+          <!-- Thông báo lỗi -->
+          <div
+            th:if="${error}"
+            class="alert alert-warning text-center"
+            role="alert"
+          >
+            <strong th:text="${error}"></strong>
+          </div>
+
+          <!-- Giỏ hàng trống -->
           <div th:if="${#lists.isEmpty(cart.items)}" class="text-center">
             <h1 class="text-danger">Giỏ hàng của bạn hiện đang trống!</h1>
           </div>
@@ -157,9 +167,10 @@
           <!-- Danh sách khóa học trong giỏ -->
           <div class="row" th:if="${!#lists.isEmpty(cart.items)}">
             <div class="col-lg-12">
-              <table class="table table-bordered">
+              <table class="table table-bordered align-middle">
                 <thead class="table-light">
                   <tr>
+                    <th>#</th>
                     <th>Khóa học</th>
                     <th>Giá</th>
                     <th>Ngày thêm</th>
@@ -168,8 +179,15 @@
                 </thead>
                 <tbody>
                   <tr th:each="item : ${cart.items}">
-                    <td>
-                      <a th:href="@{'/course/detail/' + ${item.course.id}}">
+                    <td class="text-center align-middle">
+                      <input
+                        type="checkbox"
+                        name="selectedCourses"
+                        th:value="${item.course.id}"
+                      />
+                    </td>
+                    <td class="align-middle">
+                      <div class="d-flex align-items-center gap-2">
                         <img
                           th:src="@{/uploads/images/avatarcourses/{img}(img=${item.course.thumbnail})}"
                           alt="Course Image"
@@ -177,42 +195,77 @@
                             width: 80px;
                             height: 60px;
                             object-fit: cover;
-                            margin-right: 10px;
+                            border-radius: 12px;
                           "
                         />
-                        <span th:text="${item.course.name}"></span>
-                      </a>
+                        <div>
+                          <p
+                            th:text="${item.course.name}"
+                            style="
+                              margin: 0;
+                              font-weight: bold;
+                              font-size: 16px;
+                            "
+                          ></p>
+                          <small
+                            th:text="${item.course.teacher.fullName}"
+                            style="font-size: 14px"
+                          ></small>
+                        </div>
+                      </div>
                     </td>
-                    <td>
+                    <td class="align-middle">
                       <span
                         th:if="${item.course.isFree}"
-                        th:text="'Free'"
-                      ></span>
+                        class="badge bg-success rounded-pill"
+                        style="font-size: 14px; padding: 6px 12px"
+                        >Free</span
+                      >
                       <span
                         th:unless="${item.course.isFree}"
-                        th:text="${#numbers.formatDecimal(item.course.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"
+                        th:text="${#numbers.formatDecimal(item.course.price,0,'COMMA',0,'POINT')} + ' VNĐ'"
+                        class="badge bg-warning text-dark rounded-pill"
+                        style="font-size: 14px; padding: 6px 12px"
                       ></span>
                     </td>
-                    <td
-                      th:text="${#dates.format(item.addedAt, 'dd/MM/yyyy HH:mm')}"
-                    ></td>
-                    <td>
-                      <form
-                        th:action="@{/cart/remove/{id}(id=${item.course.id})}"
-                        method="post"
-                      >
-                        <button type="submit" class="btn btn-danger btn-sm">
-                          Xóa
-                        </button>
-                      </form>
+                    <td class="align-middle">
+                      <span
+                        th:text="${#temporals.format(item.addedAt,'dd/MM/yyyy HH:mm')}"
+                        style="font-size: 14px"
+                      ></span>
+                    </td>
+                    <td class="align-middle">
+                      <div class="d-flex gap-2">
+                        <form
+                          th:action="@{/cart/remove/{id}(id=${item.course.id})}"
+                          method="get"
+                        >
+                          <button type="submit" class="btn btn-danger btn-sm">
+                            Xóa
+                          </button>
+                        </form>
+                      </div>
                     </td>
                   </tr>
                 </tbody>
               </table>
 
-              <!-- Nút thanh toán -->
+              <!-- Nút thanh toán + form ẩn -->
               <div class="text-end mt-3">
-                <a href="/cart/checkout" class="btn btn-success">Thanh toán</a>
+                <form
+                  id="confirmForm"
+                  th:action="@{/cart/confirm}"
+                  method="get"
+                >
+                  <!-- hidden inputs sẽ được JS thêm vào đây -->
+                </form>
+                <button
+                  type="button"
+                  class="btn btn-success"
+                  onclick="submitSelected()"
+                >
+                  Thanh toán
+                </button>
               </div>
             </div>
           </div>
@@ -223,6 +276,32 @@
     <footer>
       <div th:replace="client/layout/footer"></div>
     </footer>
+
+    <script>
+      function submitSelected() {
+        const checkboxes = document.querySelectorAll(
+          'input[name="selectedCourses"]:checked'
+        );
+        const form = document.getElementById("confirmForm");
+        form.innerHTML = ""; // clear input cũ
+
+        if (checkboxes.length === 0) {
+          alert("Bạn chưa chọn khóa học nào để thanh toán!");
+          return;
+        }
+
+        checkboxes.forEach((cb) => {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = "selectedCourses";
+          input.value = cb.value;
+          form.appendChild(input);
+        });
+
+        form.submit();
+      }
+    </script>
+
     <!-- Scroll Up -->
     <div id="back-top">
       <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>

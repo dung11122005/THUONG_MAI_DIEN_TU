@@ -238,14 +238,55 @@
                   <span th:text="${totalDuration + ' Giờ'}">0 Giờ</span>
                 </p>
                 <div th:if="${!course.isFree and !check}">
-                  <form
-                    th:action="@{/course/purchase/{id}(id=${course.id})}"
-                    method="post"
+                  <div
+                    style="
+                      display: flex;
+                      gap: 8px;
+                      margin-top: 12px;
+                      flex-wrap: wrap;
+                    "
                   >
-                    <button type="submit" class="btn w-100 mt-3 green-btn">
-                      Mua khóa học
-                    </button>
-                  </form>
+                    <!-- Nút mua khóa học -->
+                    <form
+                      th:action="@{/course/purchase/{id}(id=${course.id})}"
+                      method="post"
+                      style="flex: 7; min-width: 0"
+                    >
+                      <button
+                        type="submit"
+                        class="btn green-btn w-100"
+                        style="
+                          height: 45px;
+                          display: flex;
+                          justify-content: center;
+                          align-items: center;
+                        "
+                      >
+                        Mua khóa học
+                      </button>
+                    </form>
+
+                    <!-- Nút thêm vào giỏ hàng -->
+                    <form
+                      th:action="@{/cart/add/{id}(id=${course.id})}"
+                      method="post"
+                      style="flex: 3; min-width: 0"
+                    >
+                      <button
+                        type="submit"
+                        class="btn border-btn border-btn2 w-100"
+                        style="
+                          height: 45px;
+                          display: flex;
+                          justify-content: center;
+                          align-items: center;
+                        "
+                        title="Thêm vào giỏ hàng"
+                      >
+                        <i class="fas fa-shopping-cart"></i>
+                      </button>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>
