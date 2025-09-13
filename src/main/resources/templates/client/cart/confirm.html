@@ -88,6 +88,10 @@
         padding: 20px; /* padding cố định nhỏ */
         line-height: 1; /* làm nút thấp */
       }
+      .form-check-label {
+        font-size: 1.75rem !important; /* ép chữ to */
+        font-weight: 600;
+      }
     </style>
   </head>
 
@@ -110,10 +114,12 @@
     <main>
       <section class="py-5">
         <div class="container">
-          <h2 class="text-center mb-4">Xác nhận khóa học đã chọn</h2>
+          <h2 class="text-center mb-4 fs-2 fw-bold">
+            Xác nhận khóa học đã chọn
+          </h2>
 
           <!-- Thông báo lỗi nếu không có khóa học -->
-          <div th:if="${error}" class="alert alert-warning text-center">
+          <div th:if="${error}" class="alert alert-warning text-center fs-5">
             <strong th:text="${error}"></strong>
           </div>
 
@@ -123,26 +129,26 @@
               th:if="${!#lists.isEmpty(selectedCourses)}"
               class="table-responsive"
             >
-              <table class="table table-bordered align-middle text-center">
+              <table class="table table-bordered align-middle text-center fs-5">
                 <thead class="table-light">
                   <tr>
                     <th style="width: 60px">#</th>
-                    <th style="min-width: 300px">Khóa học</th>
-                    <th style="width: 180px">Giá</th>
+                    <th style="min-width: 350px">Khóa học</th>
+                    <th style="width: 200px">Giá</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr th:each="course, iterStat : ${selectedCourses}">
                     <td th:text="${iterStat.index + 1}" class="fw-bold"></td>
 
-                    <td class="text-start">
+                    <td class="text-start p-3">
                       <div class="d-flex align-items-center gap-3">
                         <img
                           th:src="@{/uploads/images/avatarcourses/{img}(img=${course.thumbnail})}"
                           alt="Course Image"
                           style="
-                            width: 90px;
-                            height: 65px;
+                            width: 110px;
+                            height: 80px;
                             object-fit: cover;
                             border-radius: 8px;
                           "
@@ -150,11 +156,11 @@
                         <div>
                           <p
                             th:text="${course.name}"
-                            class="mb-1 fw-bold fs-5"
+                            class="mb-1 fw-bold fs-4"
                           ></p>
                           <small
                             th:text="${course.teacher.fullName}"
-                            class="text-muted"
+                            class="text-muted fs-5"
                           ></small>
                         </div>
                       </div>
@@ -166,16 +172,16 @@
                       />
                     </td>
 
-                    <td>
+                    <td class="p-3">
                       <span
                         th:if="${course.isFree}"
-                        class="badge bg-success fs-6"
+                        class="badge bg-success fs-5"
                         >Free</span
                       >
                       <span
                         th:unless="${course.isFree}"
                         th:text="${#numbers.formatDecimal(course.price,0,'COMMA',0,'POINT')} + ' VNĐ'"
-                        class="fw-bold fs-5 text-danger"
+                        class="fw-bold fs-4 text-danger"
                       ></span>
                     </td>
                   </tr>
@@ -184,10 +190,10 @@
                 <!-- Tổng tiền -->
                 <tfoot>
                   <tr class="table-light">
-                    <td colspan="2" class="text-end fw-bold fs-5">
+                    <td colspan="2" class="text-end fw-bold fs-4">
                       Tổng cộng:
                     </td>
-                    <td class="fw-bold fs-5 text-primary">
+                    <td class="fw-bold fs-4 text-primary">
                       <span
                         th:text="${#numbers.formatDecimal(totalPrice,0,'COMMA',0,'POINT')} + ' VNĐ'"
                       ></span>
@@ -198,10 +204,24 @@
             </div>
 
             <!-- Chọn hình thức thanh toán -->
-            <div class="mb-4">
-              <label class="form-label fw-bold"
-                >Chọn phương thức thanh toán:</label
-              ><br />
+            <!-- Chọn hình thức thanh toán -->
+            <div class="mb-4 fs-5">
+              <label class="form-label fw-bold fs-4 d-block mb-2">
+                Chọn phương thức thanh toán:
+              </label>
+              <div class="form-check">
+                <input
+                  class="form-check-input payment-option"
+                  type="radio"
+                  name="paymentMethod"
+                  id="momo"
+                  value="MOMO"
+                  checked
+                />
+                <label class="form-check-label fs-5 fw-semibold" for="momo">
+                  Momo
+                </label>
+              </div>
               <div class="form-check">
                 <input
                   class="form-check-input payment-option"
@@ -209,24 +229,18 @@
                   name="paymentMethod"
                   id="paypal"
                   value="PAYPAL"
-                  checked
                 />
-                <label class="form-check-label" for="paypal">PayPal</label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input payment-option"
-                  type="radio"
-                  name="paymentMethod"
-                  id="vnpay"
-                  value="VNPAY"
-                />
-                <label class="form-check-label" for="vnpay">VNPAY</label>
+                <label class="form-check-label fs-5 fw-semibold" for="paypal">
+                  PayPal
+                </label>
               </div>
             </div>
 
             <div class="text-end">
-              <button type="submit" class="btn btn-success btn-lg w-100">
+              <button
+                type="submit"
+                class="btn btn-success btn-lg w-100 fs-4 py-3"
+              >
                 Xác nhận và thanh toán
               </button>
             </div>

@@ -77,6 +77,12 @@ public class CartService {
         this.cartItemRepository.delete(item); // orphanRemoval = true cũng sẽ xóa nhưng gọi explicit cũng ok
     }
 
+    @Transactional
+    public void removeCoursesFromCart(Long studentId, List<Long> courseIds) {
+        for (Long courseId : courseIds) {
+            removeCourseFromCart(studentId, courseId);
+        }
+    }
 
     public Cart getCartByStudent(User student) {
         return this.cartRepository.findByStudent(student).orElse(new Cart());
@@ -89,5 +95,16 @@ public class CartService {
         }
         return this.courseRepository.findByIdIn(courseIds);
     }
+
+    public boolean isCourseInCart(Long studentId, Long courseId) {
+        User student = this.userRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+        
+        return this.cartRepository.findByStudent(student)
+                .map(cart -> cart.getItems().stream()
+                        .anyMatch(item -> item.getCourse().getId().equals(courseId)))
+                .orElse(false);
+    }
+
 
 }

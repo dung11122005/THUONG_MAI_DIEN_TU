@@ -122,8 +122,10 @@
 
             <div class="mb-3">
               <strong>Giá: </strong>
+              <span th:if="${course.isFree}">Miễn phí</span>
               <span
-                th:text="${course.isFree} ? 'Miễn phí' : ${#numbers.formatDecimal(course.price, 0, 'COMMA', 2, 'POINT') + ' VNĐ'}"
+                th:if="${!course.isFree}"
+                th:text="${#numbers.formatDecimal(course.price,0,'COMMA',0,'POINT')} + ' VNĐ'"
               ></span>
             </div>
 
@@ -237,7 +239,9 @@
                   <strong>Tổng thời lượng:</strong>
                   <span th:text="${totalDuration + ' Giờ'}">0 Giờ</span>
                 </p>
-                <div th:if="${!course.isFree and !check}">
+
+                <!-- Nếu khóa học trả phí và chưa mua -->
+                <div th:if="${!course.isFree and !isPurchased}">
                   <div
                     style="
                       display: flex;
@@ -246,7 +250,7 @@
                       flex-wrap: wrap;
                     "
                   >
-                    <!-- Nút mua khóa học -->
+                    <!-- Luôn hiện nút Mua khóa học -->
                     <form
                       th:action="@{/course/purchase/{id}(id=${course.id})}"
                       method="post"
@@ -266,10 +270,11 @@
                       </button>
                     </form>
 
-                    <!-- Nút thêm vào giỏ hàng -->
+                    <!-- Nút thêm vào giỏ chỉ hiện nếu chưa có -->
                     <form
+                      th:if="${!inCart}"
                       th:action="@{/cart/add/{id}(id=${course.id})}"
-                      method="post"
+                      method="get"
                       style="flex: 3; min-width: 0"
                     >
                       <button
@@ -287,6 +292,13 @@
                       </button>
                     </form>
                   </div>
+                </div>
+
+                <!-- Nếu đã mua -->
+                <div th:if="${isPurchased}">
+                  <button class="btn btn-secondary w-100" disabled>
+                    Đã sở hữu
+                  </button>
                 </div>
               </div>
             </div>

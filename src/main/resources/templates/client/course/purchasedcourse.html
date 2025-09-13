@@ -108,6 +108,7 @@
     <div th:replace="client/layout/header"></div>
     <!-- Header End -->
     <main>
+      <!--? slider Area Start-->
       <section
         class="slider-area"
         style="background-color: #6c5ce7; padding: 10px 0"
@@ -123,7 +124,7 @@
                   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
                 "
               >
-                Giỏ hàng của bạn
+                Khóa học đã mua
               </h1>
               <nav aria-label="breadcrumb">
                 <ol
@@ -138,7 +139,7 @@
                     aria-current="page"
                     style="color: #fff"
                   >
-                    Giỏ hàng
+                    Khóa học đã mua
                   </li>
                 </ol>
               </nav>
@@ -146,73 +147,69 @@
           </div>
         </div>
       </section>
-
       <div class="services-area services-area2 section-padding40">
         <div class="container">
-          <!-- Nếu giỏ trống -->
-          <div th:if="${#lists.isEmpty(cart.items)}" class="text-center">
-            <h1 class="text-danger">Giỏ hàng của bạn hiện đang trống!</h1>
+          <div
+            th:if="${error}"
+            class="alert alert-warning text-center"
+            role="alert"
+          >
+            <strong th:text="${error}"></strong>
           </div>
-
-          <!-- Danh sách khóa học trong giỏ -->
-          <div class="row" th:if="${!#lists.isEmpty(cart.items)}">
-            <div class="col-lg-12">
-              <table class="table table-bordered">
-                <thead class="table-light">
-                  <tr>
-                    <th>Khóa học</th>
-                    <th>Giá</th>
-                    <th>Ngày thêm</th>
-                    <th>Hành động</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr th:each="item : ${cart.items}">
-                    <td>
-                      <a th:href="@{'/course/detail/' + ${item.course.id}}">
-                        <img
-                          th:src="@{/uploads/images/avatarcourses/{img}(img=${item.course.thumbnail})}"
-                          alt="Course Image"
-                          style="
-                            width: 80px;
-                            height: 60px;
-                            object-fit: cover;
-                            margin-right: 10px;
-                          "
-                        />
-                        <span th:text="${item.course.name}"></span>
-                      </a>
-                    </td>
-                    <td>
-                      <span
-                        th:if="${item.course.isFree}"
-                        th:text="'Free'"
-                      ></span>
-                      <span
-                        th:unless="${item.course.isFree}"
-                        th:text="${#numbers.formatDecimal(item.course.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"
-                      ></span>
-                    </td>
-                    <td
-                      th:text="${#dates.format(item.addedAt, 'dd/MM/yyyy HH:mm')}"
-                    ></td>
-                    <td>
-                      <form
-                        th:action="@{/cart/remove/{id}(id=${item.course.id})}"
-                        method="post"
+          <!-- Nếu không có kỳ thi -->
+          <div th:if="${#lists.isEmpty(courses)}" class="text-center">
+            <h1 class="text-danger">Hiện tại bạn chưa mua khóa học nào!</h1>
+          </div>
+          <div class="row">
+            <div class="col-lg-4" th:each="course : ${courses}">
+              <div class="properties properties2 mb-30">
+                <div class="properties__card">
+                  <div class="properties__img overlay1">
+                    <a th:href="@{'/course/detail/' + ${course.id}}"
+                      ><img
+                        th:src="@{/uploads/images/avatarcourses/{img}(img=${course.thumbnail})}"
+                        alt="Course Image"
+                    /></a>
+                  </div>
+                  <div class="properties__caption">
+                    <p th:text="${course.teacher.fullName}">Tên giảng viên</p>
+                    <h3>
+                      <a
+                        th:href="@{'/course/detail/' + ${course.id}}"
+                        th:text="${course.name}"
+                        >Tên Khóa học</a
                       >
-                        <button type="submit" class="btn btn-danger btn-sm">
-                          Xóa
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <!-- Nút thanh toán -->
-              <div class="text-end mt-3">
-                <a href="/cart/checkout" class="btn btn-success">Thanh toán</a>
+                    </h3>
+                    <p th:text="${course.shortDescription}">mô tả ngắn</p>
+                    <div
+                      class="properties__footer d-flex justify-content-between align-items-center"
+                    >
+                      <div class="restaurant-name">
+                        <div class="rating">
+                          <i class="fas fa-star"></i>
+                          <i class="fas fa-star"></i>
+                          <i class="fas fa-star"></i>
+                          <i class="fas fa-star"></i>
+                          <i class="fas fa-star-half"></i>
+                        </div>
+                        <p><span>(4.5)</span> based on 120</p>
+                      </div>
+                      <div class="price">
+                        <span th:if="${course.isFree}" th:text="'Free'"></span>
+                        <span
+                          th:unless="${course.isFree}"
+                          th:text="${#numbers.formatDecimal(course.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"
+                        ></span>
+                      </div>
+                    </div>
+                    <a
+                      th:href="@{'/course/detail/' + ${course.id}}"
+                      th:classappend="${course.isFree} ? ' green-btn border-btn border-btn2' : ' border-btn border-btn2'"
+                    >
+                      Find out more
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

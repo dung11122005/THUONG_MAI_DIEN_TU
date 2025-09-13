@@ -63,29 +63,42 @@
     <!-- Header Start -->
     <div th:replace="client/layout/header"></div>
     <!-- Header End -->
-    <main>
-      <div
-        class="services-area services-area2 mt-5 py-5"
-        style="margin-top: 200px !important; margin-bottom: 150px !important"
-      >
+    <main style="padding: 100px">
+      <div class="services-area services-area2 mt-5 py-5">
         <div class="container py-5">
           <div class="text-center">
             <h1 class="big-title" style="color: green">
               🎉 Thanh toán thành công!
             </h1>
-            <h1 class="medium-title">
+
+            <h1 class="medium-title" th:if="${#lists.size(courses) == 1}">
               Cảm ơn bạn đã đăng ký khóa học
-              <strong th:text="${course.name}">[Tên khóa học]</strong>.
-            </h1>
-            <h1 class="small-title">
-              Chúng tôi đã gửi thông tin khóa học vào email của bạn.
+              <strong th:text="${courses[0].name}">[Tên khóa học]</strong>.
             </h1>
 
+            <h1 class="medium-title" th:if="${#lists.size(courses) > 1}">
+              Cảm ơn bạn đã đăng ký các khóa học sau:
+            </h1>
+
+            <ul class="list-group my-3" th:if="${#lists.size(courses) > 1}">
+              <li class="list-group-item fw-bold" th:each="c : ${courses}">
+                <span th:text="${c.name}">[Tên khóa học]</span>
+                <a
+                  th:href="@{'/course/detail/'+${c.id}}"
+                  class="btn btn-sm btn-primary ms-2"
+                  >Xem chi tiết</a
+                >
+              </li>
+            </ul>
+
             <a
-              th:href="@{'/course/detail/'+${course.id}}"
+              th:if="${#lists.size(courses) == 1}"
+              th:href="@{'/course/detail/'+${courses[0].id}}"
               class="btn btn-lg btn-primary mt-3"
-              >Khóa học vừa mua</a
             >
+              Khóa học vừa mua
+            </a>
+
             <a href="/purchased-course" class="btn btn-lg btn-success mt-3 ms-2"
               >Xem các khóa học đã mua</a
             >

@@ -238,25 +238,6 @@
                       >
                         <span>Xem chi tiết</span>
                       </a>
-
-                      <!-- Thêm vào giỏ hàng (chỉ hiện khi không free) -->
-                      <a
-                        th:if="${!course.isFree}"
-                        th:href="@{'/cart/add/' + ${course.id}}"
-                        class="btn-cart border-btn border-btn2"
-                        style="
-                          flex: 3;
-                          display: flex;
-                          align-items: center;
-                          justify-content: center;
-                          min-width: 0;
-                          padding: 10px 12px;
-                          text-align: center;
-                        "
-                        title="Thêm vào giỏ hàng"
-                      >
-                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
-                      </a>
                     </div>
                   </div>
                 </div>

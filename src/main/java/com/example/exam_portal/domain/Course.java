@@ -35,8 +35,9 @@ public class Course {
 
     private Float price;
 
-    @Column(name = "is_free")
+    @Column(name = "is_free", nullable = false)
     private Boolean isFree = false;
+
 
     @ManyToOne
     @JoinColumn(name = "teacher_id", nullable = false)

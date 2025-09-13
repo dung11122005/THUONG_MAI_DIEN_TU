@@ -27,6 +27,7 @@ import com.example.exam_portal.domain.CourseLesson;
 import com.example.exam_portal.domain.PaymentRequest;
 import com.example.exam_portal.domain.Purchase;
 import com.example.exam_portal.domain.User;
+import com.example.exam_portal.service.CartService;
 import com.example.exam_portal.service.CourseService;
 import com.example.exam_portal.service.PaymentService;
 import com.example.exam_portal.service.PurchaseService;
@@ -45,13 +46,15 @@ public class CourseClientController {
     private final UserService userService;
     private final PurchaseService purchaseService;
     private final PaymentService paymentService;
+    private final CartService cartService;
 
     public CourseClientController(CourseService courseService, UserService userService, 
-    PurchaseService purchaseService, PaymentService paymentService){
+    PurchaseService purchaseService, PaymentService paymentService, CartService cartService){
         this.courseService=courseService;
         this.userService=userService;
         this.purchaseService=purchaseService;
         this.paymentService=paymentService;
+        this.cartService=cartService;
     }
 
     @GetMapping("/courses")
@@ -89,29 +92,41 @@ public class CourseClientController {
     }
     
     @GetMapping("/course/detail/{id}")
-    public String getCourseDetailtPage(Model model, @PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
-        Course course=this.courseService.getCourseById(id);
+    public String getCourseDetailPage(Model model,
+                                      @PathVariable long id,
+                                      @AuthenticationPrincipal UserDetails userDetails) {
+        Course course = this.courseService.getCourseById(id);
         User user = this.userService.getUserByEmail(userDetails.getUsername());
+                                    
         int totalLessons = course.getChapters().stream()
             .flatMap(c -> c.getLessons().stream())
-            .collect(Collectors.toList())
+            .toList()
             .size();
-
+                                    
         int totalDuration = course.getChapters().stream()
             .flatMap(c -> c.getLessons().stream())
             .mapToInt(CourseLesson::getDurationMinutes)
-            .sum();
-
-        totalDuration=totalDuration/60;
-
-        boolean check=this.purchaseService.checkPurchaseStudentIdAndCourseId(user.getId(), id);
-        model.addAttribute("check", check);
+            .sum() / 60;
+                                    
+        // luôn gán giá trị mặc định -> không null
+        boolean isPurchased = false;
+        boolean inCart = false;
+                                    
+        if (user != null) {
+            isPurchased = this.purchaseService.checkPurchaseStudentIdAndCourseId(user.getId(), id);
+            inCart = this.cartService.isCourseInCart(user.getId(), id);
+        }
+    
         model.addAttribute("course", course);
         model.addAttribute("totalLessons", totalLessons);
         model.addAttribute("totalDuration", totalDuration);
-        
+        model.addAttribute("isPurchased", isPurchased);
+        model.addAttribute("inCart", inCart);
+    
         return "client/course/coursedetailt";
     }
+
+
     
    @PostMapping("/course/purchase/{courseId}")
     public String postPurchaseCourse(@PathVariable Long courseId,
@@ -134,9 +149,10 @@ public class CourseClientController {
         String orderInfo = "Thanh toan khoa hoc " + courseNameNoAccent;
         String amount = String.valueOf(course.getPrice().intValue());
 
-        // Mã hóa userId và courseId vào extraData
-        String extraData = Base64.getEncoder().encodeToString((courseId + "," + userId)
-                .getBytes(StandardCharsets.UTF_8));
+       
+        String extraDataString = "single:" + userId + "," + courseId;
+        String extraData = Base64.getEncoder()
+                .encodeToString(extraDataString.getBytes(StandardCharsets.UTF_8));
 
         // Tạo request
         PaymentRequest paymentRequest = new PaymentRequest();
@@ -153,48 +169,49 @@ public class CourseClientController {
         return (payUrl != null && !payUrl.isEmpty()) ? "redirect:" + payUrl : "redirect:/thanks";
     }
 
-    @GetMapping("/thanks")
-    public String handleMomoReturn(Model model,
-                                   @RequestParam(value = "orderId", required = false) String orderId,
-                                   @RequestParam(value = "resultCode", required = false) Integer resultCode) throws Exception {
+
+    // @GetMapping("/thanks")
+    // public String handleMomoReturn(Model model,
+    //                                @RequestParam(value = "orderId", required = false) String orderId,
+    //                                @RequestParam(value = "resultCode", required = false) Integer resultCode) throws Exception {
                                 
-        String requestId = orderId + "001"; // giống lúc tạo request
+    //     String requestId = orderId + "001"; // giống lúc tạo request
                                 
-        String statusResponse = paymentService.queryTransactionStatus(orderId, requestId);
-        JsonNode json = new ObjectMapper().readTree(statusResponse);
+    //     String statusResponse = paymentService.queryTransactionStatus(orderId, requestId);
+    //     JsonNode json = new ObjectMapper().readTree(statusResponse);
                                 
-        String encodedExtraData = json.path("extraData").asText();
-        String decoded = new String(Base64.getDecoder().decode(encodedExtraData), StandardCharsets.UTF_8);
-        String[] parts = decoded.split(",");
-        Long courseId = Long.parseLong(parts[0]);
-        Long userId = Long.parseLong(parts[1]);
+    //     String encodedExtraData = json.path("extraData").asText();
+    //     String decoded = new String(Base64.getDecoder().decode(encodedExtraData), StandardCharsets.UTF_8);
+    //     String[] parts = decoded.split(",");
+    //     Long courseId = Long.parseLong(parts[0]);
+    //     Long userId = Long.parseLong(parts[1]);
                                 
-        Course course = courseService.getCourseById(courseId);
-        model.addAttribute("course", course); // luôn truyền về để hiển thị
+    //     Course course = courseService.getCourseById(courseId);
+    //     model.addAttribute("course", course); // luôn truyền về để hiển thị
                                 
-        int resultCodeFromApi = json.path("resultCode").asInt();
+    //     int resultCodeFromApi = json.path("resultCode").asInt();
                                 
-        if (resultCode != null && resultCode != 0) {
-            return "client/thank/failure"; // thất bại từ callback đầu tiên
-        }
+    //     if (resultCode != null && resultCode != 0) {
+    //         return "client/thank/failure"; // thất bại từ callback đầu tiên
+    //     }
     
-        if (resultCodeFromApi == 0) {
-            User user = userService.getUserById(userId);
+    //     if (resultCodeFromApi == 0) {
+    //         User user = userService.getUserById(userId);
         
-            if (course != null && user != null &&
-                !purchaseService.checkPurchaseStudentIdAndCourseId(userId, courseId)) {
+    //         if (course != null && user != null &&
+    //             !purchaseService.checkPurchaseStudentIdAndCourseId(userId, courseId)) {
                 
-                Purchase purchase = new Purchase();
-                purchase.setCourse(course);
-                purchase.setStudent(user);
-                purchaseService.handleSavePurchase(purchase);
-            }
+    //             Purchase purchase = new Purchase();
+    //             purchase.setCourse(course);
+    //             purchase.setStudent(user);
+    //             purchaseService.handleSavePurchase(purchase);
+    //         }
         
-            return "client/thank/thank"; // thành công
-        }
+    //         return "client/thank/thank"; // thành công
+    //     }
     
-        return "client/thank/failure"; // thất bại từ kết quả truy vấn
-    }
+    //     return "client/thank/failure"; // thất bại từ kết quả truy vấn
+    // }
     
 
     @GetMapping("/test/thank")
