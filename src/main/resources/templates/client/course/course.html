@@ -217,6 +217,12 @@
                     >
                       Find out more
                     </a>
+                    <a
+                      th:href="@{'/course/detail/' + ${course.id}}"
+                      th:classappend="${course.isFree} ? ' green-btn border-btn border-btn2' : ' border-btn border-btn2'"
+                    >
+                      Find out more
+                    </a>
                   </div>
                 </div>
               </div>
