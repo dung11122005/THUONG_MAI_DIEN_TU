@@ -92,6 +92,14 @@
       padding: 20px; /* padding cố định nhỏ */
       line-height: 1; /* làm nút thấp */
     }
+
+    .btn.border-btn {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      height: 50px !important;
+      padding: 0 !important; /* tránh padding cũ ảnh hưởng */
+    }
   </style>
 
   <body>
@@ -191,7 +199,7 @@
                                 class="btn btn-primary lesson-btn"
                                 th:attr="data-url=${lesson.videoUrl}"
                                 onclick="showVideoFromButton(this)"
-                                th:if="${course.isFree or check}"
+                                th:if="${(course.isFree != null and course.isFree) or (check != null and check)}"
                               >
                                 Xem
                               </button>
@@ -279,13 +287,8 @@
                     >
                       <button
                         type="submit"
-                        class="btn border-btn border-btn2 w-100"
-                        style="
-                          height: 45px;
-                          display: flex;
-                          justify-content: center;
-                          align-items: center;
-                        "
+                        class="btn border-btn border-btn2 w-100 d-flex justify-content-center align-items-center"
+                        style="height: 45px"
                         title="Thêm vào giỏ hàng"
                       >
                         <i class="fas fa-shopping-cart"></i>

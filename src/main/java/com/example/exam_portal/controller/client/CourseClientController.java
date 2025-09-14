@@ -97,34 +97,38 @@ public class CourseClientController {
                                       @AuthenticationPrincipal UserDetails userDetails) {
         Course course = this.courseService.getCourseById(id);
         User user = this.userService.getUserByEmail(userDetails.getUsername());
-                                    
+
         int totalLessons = course.getChapters().stream()
             .flatMap(c -> c.getLessons().stream())
             .toList()
             .size();
-                                    
+
         int totalDuration = course.getChapters().stream()
             .flatMap(c -> c.getLessons().stream())
             .mapToInt(CourseLesson::getDurationMinutes)
             .sum() / 60;
-                                    
-        // luôn gán giá trị mặc định -> không null
+
         boolean isPurchased = false;
         boolean inCart = false;
-                                    
+
         if (user != null) {
             isPurchased = this.purchaseService.checkPurchaseStudentIdAndCourseId(user.getId(), id);
             inCart = this.cartService.isCourseInCart(user.getId(), id);
         }
-    
+
+        // thêm biến check cho template
+        boolean check = course.getIsFree() || isPurchased;
+
         model.addAttribute("course", course);
         model.addAttribute("totalLessons", totalLessons);
         model.addAttribute("totalDuration", totalDuration);
         model.addAttribute("isPurchased", isPurchased);
         model.addAttribute("inCart", inCart);
-    
+        model.addAttribute("check", check); // quan trọng
+
         return "client/course/coursedetailt";
     }
+
 
 
     
