@@ -23,5 +23,7 @@ public interface CourseRepository extends JpaRepository<Course, Long>, JpaSpecif
 
     Course findById(long id);
 
+    Course findBySlug(String slug);
+
     List<Course> findByIdIn(List<Long> ids);
 }

@@ -71,6 +71,10 @@ public class CourseService {
         return this.courseRepository.findById(id);
     }
 
+    public Course getCourseBySlug(String slug) {
+        return this.courseRepository.findBySlug(slug);
+    }
+
     public List<Course> getCourseByTeacherId(long id) {
         return this.courseRepository.findByTeacherId(id);
     }

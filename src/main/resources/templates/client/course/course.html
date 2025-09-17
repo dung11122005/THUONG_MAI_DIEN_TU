@@ -6,6 +6,10 @@
     <title>Courses | Education</title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- ✅ Thêm canonical tag -->
+    <link rel="canonical" th:href="@{|https://example.com/courses?page=${currentPage}|}" />
+
     <link rel="manifest" href="site.webmanifest" />
     <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
     <link
@@ -184,7 +188,7 @@
                     <p th:text="${course.teacher.fullName}">Tên giảng viên</p>
                     <h3>
                       <a
-                        th:href="@{'/course/detail/' + ${course.id}}"
+                        th:href="@{'/course/' + ${course.slug}}"
                         th:text="${course.name}"
                         >Tên Khóa học</a
                       >

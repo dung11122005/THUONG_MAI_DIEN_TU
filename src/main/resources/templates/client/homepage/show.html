@@ -111,7 +111,7 @@
                   <p th:text="${course.teacher.fullName}">Tên giảng viên</p>
                   <h3>
                     <a
-                      th:href="@{'/course/detail/' + ${course.id}}"
+                      th:href="@{'/course/' + ${course.slug}}"
                       th:text="${course.name}"
                       >Tên khóa học</a
                     >

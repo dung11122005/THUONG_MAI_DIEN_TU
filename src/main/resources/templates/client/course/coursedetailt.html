@@ -4,8 +4,14 @@
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <title>Courses | Education</title>
-    <meta name="description" content="" />
+    <meta name="description" th:content="'Khóa học lập trình trực tuyến giúp bạn xây dựng nền tảng 
+    kiến thức vững chắc từ cơ bản đến nâng cao. Nội dung được thiết kế khoa học, 
+    dễ hiểu, phù hợp cho cả người mới bắt đầu và người đã có kinh nghiệm. Tham gia khóa học, 
+    bạn sẽ được tiếp cận với lý thuyết rõ ràng.'" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="canonical" th:href="@{|https://example.com/courses|}" />
+
     <link rel="manifest" href="site.webmanifest" />
     <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
     <link
@@ -109,7 +115,7 @@
         <div class="preloader-inner position-relative">
           <div class="preloader-circle"></div>
           <div class="preloader-img pere-text">
-            <img src="/img/logo/loder.png" alt="" />
+            <img src="/img/logo/loder.png" alt="logo" />
           </div>
         </div>
       </div>
@@ -184,9 +190,9 @@
                           <div
                             class="d-flex justify-content-between align-items-center"
                           >
-                            <span
+                            <h3 
                               th:text="${lesson.sortOrder + '. ' + lesson.title}"
-                            ></span>
+                            ></h3>
 
                             <div
                               class="d-flex align-items-center gap-4 ms-auto"
@@ -217,7 +223,8 @@
               <div class="mt-4" id="videoPlayer" style="display: none">
                 <h5>Video bài học</h5>
                 <div class="ratio ratio-16x9">
-                  <iframe id="lessonIframe" allowfullscreen></iframe>
+                  <iframe id="lessonIframe" title="Video bài học Java cơ bản" allowfullscreen></iframe>
+
                 </div>
               </div>
             </div>
@@ -228,7 +235,7 @@
             <img
               th:src="@{/uploads/images/avatarcourses/{img}(img=${course.thumbnail})}"
               class="img-fluid mb-3 custom-rounded"
-              alt="Thumbnail"
+              alt="Ảnh minh họa khóa học [[${course.name}]]"
             />
 
             <div class="card">
@@ -306,6 +313,35 @@
               </div>
             </div>
           </div>
+        </div>
+        <!-- Bình luận/Review -->
+        <div class="mt-5">
+          <h4>Nhận xét của học viên</h4>
+          <div class="comment mb-3">
+            <p><strong>Nguyễn Văn A:</strong> Khóa học Java rất dễ hiểu, giảng viên giảng chi tiết, có nhiều ví dụ thực tế giúp tôi áp dụng ngay vào dự án nhỏ của mình.</p>
+          </div>
+          <div class="comment mb-3">
+            <p><strong>Lê Thị B:</strong> Tôi thích phần bài tập thực hành vì giúp rèn luyện kỹ năng lập trình thường xuyên. Nhờ vậy tôi đã nắm chắc hơn các khái niệm OOP.</p>
+          </div>
+          <div class="comment mb-3">
+            <p><strong>Trần Văn C:</strong> Nội dung khóa học cập nhật, phù hợp cho người mới bắt đầu và cả những ai muốn ôn lại kiến thức cơ bản. Tôi đánh giá cao sự hỗ trợ nhiệt tình từ giảng viên.</p>
+          </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="mt-5">
+          <h4>Câu hỏi thường gặp (FAQ)</h4>
+          <p><strong>Khóa học này có phù hợp cho người mới bắt đầu không?</strong><br>
+             Có. Nội dung được thiết kế từ cơ bản đến nâng cao, giúp người chưa biết gì cũng có thể học.</p>
+          
+          <p><strong>Tôi có được xem lại bài học sau khi hoàn thành không?</strong><br>
+             Có. Bạn có thể xem lại video bất kỳ lúc nào.</p>
+          
+          <p><strong>Khóa học có cấp chứng chỉ không?</strong><br>
+             Sau khi hoàn thành, bạn sẽ nhận được chứng chỉ điện tử xác nhận.</p>
+          
+          <p><strong>Nếu có thắc mắc thì được hỗ trợ thế nào?</strong><br>
+             Bạn có thể đặt câu hỏi trực tiếp trong hệ thống, giảng viên sẽ phản hồi trong vòng 24h.</p>
         </div>
 
         <a th:href="@{/courses}" class="btn btn-secondary mt-4"

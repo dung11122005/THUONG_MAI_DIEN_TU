@@ -38,6 +38,8 @@ public class Course {
     @Column(name = "is_free", nullable = false)
     private Boolean isFree = false;
 
+    @Column(unique = true, nullable = false, length = 255)
+    private String slug;
 
     @ManyToOne
     @JoinColumn(name = "teacher_id", nullable = false)

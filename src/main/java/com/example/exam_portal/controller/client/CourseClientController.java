@@ -91,11 +91,11 @@ public class CourseClientController {
         return "client/course/course";
     }
     
-    @GetMapping("/course/detail/{id}")
+    @GetMapping("/course/{slug}")
     public String getCourseDetailPage(Model model,
-                                      @PathVariable long id,
+                                      @PathVariable String slug,
                                       @AuthenticationPrincipal UserDetails userDetails) {
-        Course course = this.courseService.getCourseById(id);
+        Course course = this.courseService.getCourseBySlug(slug);
         User user = this.userService.getUserByEmail(userDetails.getUsername());
 
         int totalLessons = course.getChapters().stream()
@@ -112,8 +112,8 @@ public class CourseClientController {
         boolean inCart = false;
 
         if (user != null) {
-            isPurchased = this.purchaseService.checkPurchaseStudentIdAndCourseId(user.getId(), id);
-            inCart = this.cartService.isCourseInCart(user.getId(), id);
+            isPurchased = this.purchaseService.checkPurchaseStudentIdAndCourseId(user.getId(),course.getId() );
+            inCart = this.cartService.isCourseInCart(user.getId(), course.getId());
         }
 
         // thêm biến check cho template
