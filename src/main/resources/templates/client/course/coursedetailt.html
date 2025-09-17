@@ -4,13 +4,38 @@
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <title>Courses | Education</title>
-    <meta name="description" th:content="'Khóa học lập trình trực tuyến giúp bạn xây dựng nền tảng 
+    <meta
+      name="description"
+      th:content="'Khóa học lập trình trực tuyến giúp bạn xây dựng nền tảng 
     kiến thức vững chắc từ cơ bản đến nâng cao. Nội dung được thiết kế khoa học, 
     dễ hiểu, phù hợp cho cả người mới bắt đầu và người đã có kinh nghiệm. Tham gia khóa học, 
-    bạn sẽ được tiếp cận với lý thuyết rõ ràng.'" />
+    bạn sẽ được tiếp cận với lý thuyết rõ ràng.'"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link rel="canonical" th:href="@{|https://example.com/courses|}" />
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="[[${course.name}]] | Education" />
+    <meta property="og:description" content="[[${course.shortDescription}]]" />
+    <meta
+      property="og:image"
+      content="https://example.com/uploads/images/avatarcourses/[[${course.thumbnail}]]"
+    />
+    <meta
+      property="og:url"
+      content="https://example.com/courses/detail/[[${course.id}]]"
+    />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="[[${course.name}]] | Education" />
+    <meta name="twitter:description" content="[[${course.shortDescription}]]" />
+    <meta
+      name="twitter:image"
+      content="https://example.com/uploads/images/avatarcourses/[[${course.thumbnail}]]"
+    />
+
+    <link rel="canonical" th:href="@{|https://chatgpt.com/|}" />
 
     <link rel="manifest" href="site.webmanifest" />
     <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico" />
@@ -124,241 +149,299 @@
     <!-- Header Start -->
     <div th:replace="client/layout/header"></div>
     <!-- Header End -->
-    <main>
-      <div class="container mt-5 section-padding40">
-        <div class="row">
-          <!-- Phần trái: 8 cột -->
-          <div class="col-md-8">
-            <h1 th:text="${course.name}">Tên khóa học</h1>
-            <p class="text-muted" th:text="${course.shortDescription}">
-              Mô tả ngắn
-            </p>
+    <main class="container mt-5 section-padding40">
+      <div class="row">
+        <!-- Phần trái: thông tin khóa học -->
+        <div class="col-md-8">
+          <h1 th:text="${course.name}">Tên khóa học</h1>
+          <p class="text-muted" th:text="${course.shortDescription}">
+            Mô tả ngắn
+          </p>
 
-            <div class="mb-3">
-              <strong>Giá: </strong>
-              <span th:if="${course.isFree}">Miễn phí</span>
-              <span
-                th:if="${!course.isFree}"
-                th:text="${#numbers.formatDecimal(course.price,0,'COMMA',0,'POINT')} + ' VNĐ'"
-              ></span>
-            </div>
+          <p>
+            <strong>Giá:</strong>
+            <span th:if="${course.isFree}">Miễn phí</span>
+            <span
+              th:if="${!course.isFree}"
+              th:text="${#numbers.formatDecimal(course.price,0,'COMMA',0,'POINT')} + ' VNĐ'"
+            ></span>
+          </p>
 
-            <div class="mb-4">
-              <strong>Giáo viên: </strong>
-              <span th:text="${course.teacher.fullName}">Tên giáo viên</span>
-            </div>
+          <p>
+            <strong>Giáo viên:</strong>
+            <span th:text="${course.teacher.fullName}">Tên giáo viên</span>
+          </p>
 
-            <div class="mb-5">
-              <h4>Giới thiệu chi tiết</h4>
-              <p th:utext="${course.description}">Mô tả chi tiết</p>
-            </div>
-            <div class="mt-4 mb-5">
-              <h4>Lợi ích khi tham gia khóa học</h4>
-              <ul>
-                <li>Hiểu rõ các khái niệm cơ bản và nâng cao trong lĩnh vực học tập</li>
-                <li>Thực hành các bài tập và tình huống thực tế</li>
-                <li>Rèn luyện tư duy logic, khả năng phân tích và giải quyết vấn đề</li>
-                <li>Học theo lộ trình từ cơ bản đến nâng cao, phù hợp với mọi trình độ</li>
-                <li>Được hỗ trợ từ giảng viên và cộng đồng học viên</li>
-              </ul>
-            </div>
+          <!-- Giới thiệu chi tiết -->
+          <h4>Giới thiệu chi tiết</h4>
+          <p th:utext="${course.description}">
+            Mô tả chi tiết về khóa học. Nội dung được thiết kế đầy đủ từ cơ bản
+            đến nâng cao, bao gồm lý thuyết, thực hành, bài tập minh họa và ví
+            dụ thực tế. Học viên sẽ rèn luyện tư duy logic, kỹ năng phân tích và
+            giải quyết vấn đề qua từng bài học. Khóa học cung cấp hướng dẫn chi
+            tiết từ giảng viên, giúp học viên tiếp thu kiến thức nhanh hơn, cùng
+            với mẹo học tập và ví dụ minh họa cụ thể.
+          </p>
+          <p>
+            Khóa học cung cấp tổng quan về lý thuyết, thực hành và bài tập áp
+            dụng thực tế. Học viên sẽ học cách phân tích vấn đề, áp dụng giải
+            pháp, đồng thời học mẹo lập trình nâng cao. Nội dung chi tiết từng
+            bài, bao gồm minh họa bằng dự án mẫu, kèm hướng dẫn giải quyết lỗi
+            phổ biến, bài tập tự luyện, và các ví dụ từ dự án thực tế.
+          </p>
 
-            <div>
-              <h4>Nội dung khóa học</h4>
-              <div class="accordion" id="courseAccordion">
-                <div
-                  th:each="chapter, chapStat : ${course.chapters}"
-                  class="accordion-item"
+          <!-- Lợi ích -->
+          <h4>Lợi ích khi tham gia khóa học</h4>
+          <ul style="margin-top: 1.5rem; margin-bottom: 1.5rem">
+            <li>
+              Hiểu rõ các khái niệm cơ bản và nâng cao trong lĩnh vực học tập,
+              được minh họa bằng nhiều ví dụ thực tế từ các dự án, bài tập và
+              tình huống thực tế. Học viên sẽ được hướng dẫn từng bước, có lời
+              khuyên và các mẹo học tập giúp áp dụng kiến thức vào công việc
+              ngay.
+            </li>
+
+            <li>
+              Thực hành các bài tập và tình huống thực tế, rèn luyện kỹ năng tư
+              duy logic, phân tích dữ liệu và giải quyết vấn đề hiệu quả.
+            </li>
+            <li>
+              Học theo lộ trình từ cơ bản đến nâng cao, phù hợp mọi trình độ,
+              tăng khả năng tiếp thu và ghi nhớ kiến thức lâu dài.
+            </li>
+            <li>
+              Được hỗ trợ từ giảng viên và cộng đồng học viên, nhận phản hồi chi
+              tiết và kịp thời để cải thiện kỹ năng.
+            </li>
+            <li>
+              Nhận chứng chỉ sau khi hoàn thành, xác nhận năng lực, có giá trị
+              tham khảo trong CV và hồ sơ học tập.
+            </li>
+          </ul>
+
+          <!-- Nội dung khóa học -->
+          <h4>Nội dung khóa học</h4>
+          <div class="accordion" id="courseAccordion">
+            <div
+              th:each="chapter, chapStat : ${course.chapters}"
+              class="accordion-item"
+            >
+              <!-- Chương: H2 -->
+              <h2
+                class="accordion-header"
+                th:attr="id=${'heading' + chapStat.index}"
+              >
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  th:attr="data-bs-target=${'#collapse' + chapStat.index}, aria-controls=${'collapse' + chapStat.index}"
+                  aria-expanded="false"
                 >
-                  <h2
-                    class="accordion-header"
-                    th:attr="id=${'heading' + chapStat.index}"
-                  >
-                    <button
-                      class="accordion-button collapsed"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      th:attr="data-bs-target=${'#collapse' + chapStat.index}, aria-controls=${'collapse' + chapStat.index}"
-                      aria-expanded="false"
-                    >
-                      <span
-                        th:text="'Chương ' + ${chapter.sortOrder} + ': ' + ${chapter.title}"
-                      ></span>
-                    </button>
-                  </h2>
-                  <div
-                    th:attr="id=${'collapse' + chapStat.index}, aria-labelledby=${'heading' + chapStat.index}"
-                    class="accordion-collapse collapse"
-                    data-bs-parent="#courseAccordion"
-                  >
-                    <div class="accordion-body">
-                      <ul class="list-group">
-                        <li
-                          class="list-group-item"
-                          th:each="lesson : ${chapter.lessons}"
-                        >
-                          <div
-                            class="d-flex justify-content-between align-items-center"
-                          >
-                            <h3 
-                              th:text="${lesson.sortOrder + '. ' + lesson.title}"
-                            ></h3>
+                  <span
+                    th:text="'Chương ' + ${chapter.sortOrder} + ': ' + ${chapter.title}"
+                  ></span>
+                </button>
+              </h2>
 
-                            <div
-                              class="d-flex align-items-center gap-4 ms-auto"
-                            >
-                              <small
-                                th:text="${lesson.durationMinutes + ' phút'}"
-                              ></small>
-
-                              <button
-                                class="btn btn-primary lesson-btn"
-                                th:attr="data-url=${lesson.videoUrl}"
-                                onclick="showVideoFromButton(this)"
-                                th:if="${(course.isFree != null and course.isFree) or (check != null and check)}"
-                              >
-                                Xem
-                              </button>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Khung video xem bài học -->
-              <!-- Thay cho khung video hiện tại -->
-              <div class="mt-4" id="videoPlayer" style="display: none">
-                <h5>Video bài học</h5>
-                <div class="ratio ratio-16x9">
-                  <iframe id="lessonIframe" title="Video bài học Java cơ bản" allowfullscreen></iframe>
-
+              <div
+                th:attr="id=${'collapse' + chapStat.index}, aria-labelledby=${'heading' + chapStat.index}"
+                class="accordion-collapse collapse"
+                data-bs-parent="#courseAccordion"
+              >
+                <div class="accordion-body">
+                  <ul>
+                    <li th:each="lesson : ${chapter.lessons}">
+                      <!-- Bài học: H3 -->
+                      <h3
+                        th:text="${lesson.sortOrder + '. ' + lesson.title}"
+                      ></h3>
+                      <p>
+                        <small
+                          th:text="${lesson.durationMinutes + ' phút'}"
+                        ></small>
+                      </p>
+                      <button
+                        class="btn btn-primary lesson-btn"
+                        th:attr="data-url=${lesson.videoUrl}"
+                        onclick="showVideoFromButton(this)"
+                        th:if="${(course.isFree != null and course.isFree) or (check != null and check)}"
+                      >
+                        Xem
+                      </button>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Phần phải: 4 cột -->
-          <div class="col-md-4">
-            <img
-              th:src="@{/uploads/images/avatarcourses/{img}(img=${course.thumbnail})}"
-              class="img-fluid mb-3 custom-rounded"
-              alt="Ảnh minh họa khóa học [[${course.name}]]"
-            />
-
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Tổng quan</h5>
-
-                <p>
-                  <strong>Số chương:</strong>
-                  <span th:text="${#lists.size(course.chapters)}"></span>
-                </p>
-                <p>
-                  <strong>Số bài học:</strong>
-                  <span th:text="${totalLessons}">0</span>
-                </p>
-                <p>
-                  <strong>Tổng thời lượng:</strong>
-                  <span th:text="${totalDuration + ' Giờ'}">0 Giờ</span>
-                </p>
-
-                <!-- Nếu khóa học trả phí và chưa mua -->
-                <div th:if="${!course.isFree and !isPurchased}">
-                  <div
-                    style="
-                      display: flex;
-                      gap: 8px;
-                      margin-top: 12px;
-                      flex-wrap: wrap;
-                    "
-                  >
-                    <!-- Luôn hiện nút Mua khóa học -->
-                    <form
-                      th:action="@{/course/purchase/{id}(id=${course.id})}"
-                      method="post"
-                      style="flex: 7; min-width: 0"
-                    >
-                      <button
-                        type="submit"
-                        class="btn green-btn w-100"
-                        style="
-                          height: 45px;
-                          display: flex;
-                          justify-content: center;
-                          align-items: center;
-                        "
-                      >
-                        Mua khóa học
-                      </button>
-                    </form>
-
-                    <!-- Nút thêm vào giỏ chỉ hiện nếu chưa có -->
-                    <form
-                      th:if="${!inCart}"
-                      th:action="@{/cart/add/{id}(id=${course.id})}"
-                      method="get"
-                      style="flex: 3; min-width: 0"
-                    >
-                      <button
-                        type="submit"
-                        class="btn border-btn border-btn2 w-100 d-flex justify-content-center align-items-center"
-                        style="height: 45px"
-                        title="Thêm vào giỏ hàng"
-                      >
-                        <i class="fas fa-shopping-cart"></i>
-                      </button>
-                    </form>
-                  </div>
-                </div>
-
-                <!-- Nếu đã mua -->
-                <div th:if="${isPurchased}">
-                  <button class="btn btn-secondary w-100" disabled>
-                    Đã sở hữu
-                  </button>
-                </div>
-              </div>
+          <!-- Khung video -->
+          <div id="videoPlayer" style="display: none; margin-top: 20px">
+            <h5>Video bài học</h5>
+            <!-- Mô tả / transcript video -->
+            <div class="video-description mt-3">
+              <p id="lessonTitle">Mô tả chi tiết bài học</p>
+              <p id="lessonDesc">
+                Phần mô tả hoặc transcript sẽ hiển thị khi bấm "Xem".
+              </p>
             </div>
           </div>
-        </div>
-        <!-- Bình luận/Review -->
-        <div class="mt-5">
-          <h4>Nhận xét của học viên</h4>
-          <div class="comment mb-3">
-            <p><strong>Nguyễn Văn A:</strong> Khóa học Java rất dễ hiểu, giảng viên giảng chi tiết, có nhiều ví dụ thực tế giúp tôi áp dụng ngay vào dự án nhỏ của mình.</p>
-          </div>
-          <div class="comment mb-3">
-            <p><strong>Lê Thị B:</strong> Tôi thích phần bài tập thực hành vì giúp rèn luyện kỹ năng lập trình thường xuyên. Nhờ vậy tôi đã nắm chắc hơn các khái niệm OOP.</p>
-          </div>
-          <div class="comment mb-3">
-            <p><strong>Trần Văn C:</strong> Nội dung khóa học cập nhật, phù hợp cho người mới bắt đầu và cả những ai muốn ôn lại kiến thức cơ bản. Tôi đánh giá cao sự hỗ trợ nhiệt tình từ giảng viên.</p>
-          </div>
+
+          <!-- Bình luận -->
+          <h4 class="mt-5">Nhận xét của học viên</h4>
+          <p>
+            <strong>Nguyễn Văn A:</strong> Khóa học rất chi tiết, dễ hiểu và có
+            nhiều ví dụ thực tế giúp tôi áp dụng ngay vào dự án của mình. Học
+            viên còn được hướng dẫn từng bước, phân tích các tình huống cụ thể
+            và thực hành các bài tập minh họa.
+          </p>
+          <p>
+            <strong>Lê Thị B:</strong> Bài tập thực hành giúp rèn luyện kỹ năng
+            lập trình thường xuyên, tôi đã nắm chắc hơn các khái niệm OOP. Ngoài
+            ra, giảng viên cung cấp lời khuyên và hướng dẫn cách áp dụng kiến
+            thức vào công việc thực tế.
+          </p>
+          <p>
+            <strong>Trần Văn C:</strong> Nội dung cập nhật, phù hợp cho người
+            mới bắt đầu và những ai muốn ôn lại kiến thức cơ bản. Giảng viên hỗ
+            trợ nhiệt tình, trả lời các câu hỏi nhanh chóng và có nhiều ví dụ
+            minh họa cụ thể.
+          </p>
+          <p>
+            <strong>Lê Thị B:</strong> Bài tập thực hành giúp rèn luyện kỹ năng
+            lập trình thường xuyên, tôi đã nắm chắc hơn các khái niệm OOP. Ngoài
+            ra, giảng viên cung cấp lời khuyên và hướng dẫn cách áp dụng kiến
+            thức vào công việc thực tế.
+          </p>
+          <p>
+            <strong>Nguyễn Văn A:</strong> Khóa học rất chi tiết, dễ hiểu và có
+            nhiều ví dụ thực tế giúp tôi áp dụng ngay vào dự án của mình. Học
+            viên còn được hướng dẫn từng bước, phân tích các tình huống cụ thể
+            và thực hành các bài tập minh họa.
+          </p>
+
+          <!-- FAQ -->
+          <h4 class="mt-5">Câu hỏi thường gặp (FAQ)</h4>
+          <p>
+            <strong>Khóa học này có phù hợp cho người mới bắt đầu không?</strong
+            ><br />
+            Có, nội dung được thiết kế từ cơ bản đến nâng cao, bao gồm lý
+            thuyết, ví dụ minh họa và bài tập thực hành. Người mới bắt đầu sẽ dễ
+            dàng nắm bắt kiến thức, đồng thời có thể ôn tập các chương trước để
+            củng cố kiến thức.
+          </p>
+          <p>
+            <strong
+              >Tôi có được xem lại bài học sau khi hoàn thành không?</strong
+            ><br />
+            Có, bạn có thể xem lại video bất kỳ lúc nào. Khóa học cung cấp hướng
+            dẫn để ôn tập lại toàn bộ nội dung, đảm bảo học viên không bỏ lỡ
+            kiến thức quan trọng.
+          </p>
+          <p>
+            <strong>Khóa học có cấp chứng chỉ không?</strong><br />
+            Sau khi hoàn thành, học viên sẽ nhận chứng chỉ điện tử xác nhận.
+            Chứng chỉ này có thể sử dụng để chứng minh năng lực và thêm vào hồ
+            sơ cá nhân.
+          </p>
+          <p>
+            <strong>Nếu có thắc mắc thì được hỗ trợ thế nào?</strong><br />
+            Bạn có thể đặt câu hỏi trực tiếp trong hệ thống, giảng viên sẽ phản
+            hồi trong vòng 24h, đảm bảo giải đáp đầy đủ và chi tiết cho từng học
+            viên.
+          </p>
+
+          <a th:href="@{/courses}" class="btn btn-secondary mt-4"
+            >Quay lại danh sách</a
+          >
         </div>
 
-        <!-- FAQ -->
-        <div class="mt-5">
-          <h4>Câu hỏi thường gặp (FAQ)</h4>
-          <p><strong>Khóa học này có phù hợp cho người mới bắt đầu không?</strong><br>
-             Có. Nội dung được thiết kế từ cơ bản đến nâng cao, giúp người chưa biết gì cũng có thể học.</p>
-          
-          <p><strong>Tôi có được xem lại bài học sau khi hoàn thành không?</strong><br>
-             Có. Bạn có thể xem lại video bất kỳ lúc nào.</p>
-          
-          <p><strong>Khóa học có cấp chứng chỉ không?</strong><br>
-             Sau khi hoàn thành, bạn sẽ nhận được chứng chỉ điện tử xác nhận.</p>
-          
-          <p><strong>Nếu có thắc mắc thì được hỗ trợ thế nào?</strong><br>
-             Bạn có thể đặt câu hỏi trực tiếp trong hệ thống, giảng viên sẽ phản hồi trong vòng 24h.</p>
-        </div>
+        <!-- Phần phải: Sidebar -->
+        <div class="col-md-4">
+          <img
+            th:src="@{/uploads/images/avatarcourses/{img}(img=${course.thumbnail})}"
+            class="img-fluid mb-3 custom-rounded"
+            alt="Ảnh minh họa khóa học [[${course.name}]]"
+          />
 
-        <a th:href="@{/courses}" class="btn btn-secondary mt-4"
-          >Quay lại danh sách</a
-        >
+          <h5>Tổng quan</h5>
+          <p>
+            <strong>Số chương:</strong>
+            <span th:text="${#lists.size(course.chapters)}"></span>
+          </p>
+          <p>
+            <strong>Số bài học:</strong>
+            <span th:text="${totalLessons}">0</span>
+          </p>
+          <p>
+            <strong>Tổng thời lượng:</strong>
+            <span th:text="${totalDuration + ' Giờ'}">0 Giờ</span>
+          </p>
+
+          <div
+            th:if="${!course.isFree and !isPurchased}"
+            style="margin-top: 12px"
+          >
+            <form
+              th:action="@{/course/purchase/{id}(id=${course.id})}"
+              method="post"
+            >
+              <button type="submit" class="btn green-btn w-100">
+                Mua khóa học
+              </button>
+            </form>
+            <form
+              th:if="${!inCart}"
+              th:action="@{/cart/add/{id}(id=${course.id})}"
+              method="get"
+              style="margin-top: 8px"
+            >
+              <button type="submit" class="btn border-btn w-100">
+                <i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng
+              </button>
+            </form>
+          </div>
+
+          <div th:if="${isPurchased}">
+            <button class="btn btn-secondary w-100" disabled>Đã sở hữu</button>
+          </div>
+        </div>
       </div>
     </main>
+
+    <script type="application/ld+json" th:inline="javascript">
+      {
+        "@context": "https://schema.org",
+        "@type": "Course",
+        "name": "[[${course.name}]]",
+        "description": "[[${course.shortDescription}]]",
+        "provider": {
+          "@type": "Person",
+          "name": "[[${course.teacher.fullName}]]"
+        },
+        "hasCourseInstance": [
+          <th:block th:each="chapter, chapStat : ${course.chapters}">
+          {
+            "@type": "CourseInstance",
+            "name": "[[${chapter.title}]]",
+            "courseMode": "online",
+            "hasPart": [
+              <th:block th:each="lesson, lsStat : ${chapter.lessons}">
+              {
+                "@type": "Lesson",
+                "name": "[[${lesson.title}]]",
+                "duration": "PT[[${lesson.durationMinutes}]]M",
+                "url": "[[${lesson.videoUrl}]]"
+              }[[${!lsStat.last}? ',' : '']]
+              </th:block>
+            ]
+          }[[${!chapStat.last}? ',' : '']]
+          </th:block>
+        ]
+      }
+    </script>
+
     <footer>
       <div th:replace="client/layout/footer"></div>
     </footer>
@@ -375,27 +458,6 @@
         player.style.display = "block";
         video.load();
         video.play();
-      }
-    </script>
-
-    <script>
-      function showVideoFromButton(btn) {
-        const url = btn.getAttribute("data-url");
-        const embedUrl = convertToYoutubeEmbedUrl(url);
-
-        const iframe = document.getElementById("lessonIframe");
-        iframe.src = embedUrl;
-
-        const player = document.getElementById("videoPlayer");
-        player.style.display = "block";
-      }
-
-      // Chuyển link YouTube thường sang dạng nhúng
-      function convertToYoutubeEmbedUrl(url) {
-        // Ví dụ: https://www.youtube.com/watch?v=abc123 --> https://www.youtube.com/embed/abc123
-        const reg = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)/;
-        const match = url.match(reg);
-        return match ? `https://www.youtube.com/embed/${match[1]}` : url;
       }
     </script>
 
