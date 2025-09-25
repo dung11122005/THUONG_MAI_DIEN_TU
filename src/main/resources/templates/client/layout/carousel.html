@@ -1,0 +1,63 @@
+<!-- Vesitable Shop Start -->
+<div style="margin-bottom: -70px" class="container-fluid vesitable">
+  <div class="container py-5">
+    <h1 class="mb-0">Laptop Gaming - Macbook</h1>
+    <div class="owl-carousel vegetable-carousel justify-content-center">
+      <div
+        th:each="product, iterStat : ${productCarousel}"
+        th:if="${iterStat.index <= 6}"
+        class="border border-primary rounded position-relative vesitable-item"
+      >
+        <div class="vesitable-img">
+          <img
+            loading="lazy"
+            th:src="@{/images/product/{img}(img=${product.image})}"
+            class="img-fluid w-100 rounded-top"
+            alt=""
+          />
+        </div>
+        <div
+          class="text-white bg-primary px-3 py-1 rounded position-absolute"
+          style="top: 10px; right: 10px"
+        >
+          Laptop
+        </div>
+        <div
+          style="text-align: center; justify-items: center"
+          class="p-4 rounded-bottom"
+        >
+          <h4 style="font-size: 15px">
+            <a
+              th:href="@{/product/{id}(id=${product.id})}"
+              th:text="${product.name}"
+            ></a>
+          </h4>
+          <p style="font-size: 13px" th:text="${product.shortDesc}"></p>
+          <div class="d-flex justify-content-center flex-lg-wrap">
+            <p
+              style="font-size: 15px; text-align: center; width: 100%"
+              class="text-dark fw-bold mb-3"
+              th:text="${#numbers.formatInteger(product.price, Locale.getDefault())} + ' đ'"
+            ></p>
+            <form
+              th:action="@{/add-product-to-cart/{id}(id=${product.id})}"
+              method="post"
+            >
+              <input
+                type="hidden"
+                th:name="${_csrf.parameterName}"
+                th:value="${_csrf.token}"
+              />
+              <button
+                class="btn border border-secondary rounded-pill px-3 text-primary"
+              >
+                <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Vesitable Shop End -->

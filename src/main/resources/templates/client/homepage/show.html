@@ -1,0 +1,497 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trang chủ - Laptopshop</title>
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icon Font Stylesheet -->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <!-- Libraries Stylesheet -->
+    <link href="/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+    <link
+      href="/client/lib/owlcarousel/assets/owl.carousel.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/client/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Template Stylesheet -->
+    <link href="/client/css/style.css" rel="stylesheet" />
+
+    <meta name="_csrf" content="${_csrf.token}" />
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" content="${_csrf.headerName}" />
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Add this CSS to your stylesheet */
+      .dropdown-menu {
+        display: none;
+      }
+
+      .dropdown:hover .dropdown-menu {
+        display: block;
+        right: 0px;
+      }
+      #fb-chat-btn {
+        position: fixed;
+        bottom: 120px; /* nằm trên widget Tawk.to một khoảng */
+        right: 25px; /* cùng phía với Tawk.to */
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #0084ff; /* màu xanh Messenger */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+      }
+      #fb-chat-btn::before {
+        content: "";
+        display: block;
+        width: 30px;
+        height: 30px;
+        background-image: url("https://cdn-icons-png.flaticon.com/512/733/733547.png"); /* icon Messenger */
+        background-size: contain;
+        background-repeat: no-repeat;
+      }
+      #fb-chat-btn:hover {
+        background-color: #006ddb;
+      }
+    </style>
+
+    <style>
+      .page-link.disabled {
+        color: var(--bs-pagination-disabled-color);
+        pointer-events: none;
+        background-color: var(--bs-pagination-disabled-bg);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Spinner Start -->
+    <div
+      id="spinner"
+      class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center"
+    >
+      <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+    <!-- Spinner End -->
+
+    <div th:replace="client/layout/header"></div>
+
+    <div th:replace="client/layout/banner"></div>
+
+    <!-- Fruits Shop Start-->
+    <div style="margin-top: -50px" class="container-fluid fruite">
+      <div class="container py-5">
+        <div class="tab-class text-center">
+          <div class="row g-4">
+            <div class="col-lg-4 text-start">
+              <h1>Sản phẩm nổi bật</h1>
+            </div>
+            <div class="col-lg-8 text-end">
+              <ul class="nav nav-pills d-inline-flex text-center mb-5">
+                <li class="nav-item">
+                  <a
+                    class="d-flex m-2 py-2 bg-light rounded-pill active"
+                    data-bs-toggle="pill"
+                    href="/products"
+                  >
+                    <span class="text-dark" style="width: 130px"
+                      >All Products</span
+                    >
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tab-content">
+            <div id="tab-1" class="tab-pane fade show p-0 active">
+              <div class="row g-4">
+                <div class="col-lg-12">
+                  <div class="row g-4">
+                    <div
+                      class="col-md-6 col-lg-4 col-xl-3"
+                      th:each="product : ${products}"
+                    >
+                      <div class="rounded position-relative fruite-item">
+                        <div class="fruite-img">
+                          <img
+                            loading="lazy"
+                            th:src="@{/uploads/product/{image}(image=${product.image})}"
+                            class="img-fluid w-100 rounded-top"
+                            alt=""
+                          />
+                        </div>
+                        <div
+                          class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                          style="top: 10px; left: 10px"
+                        >
+                          Laptop
+                        </div>
+                        <div
+                          class="p-4 border border-secondary border-top-0 rounded-bottom"
+                        >
+                          <h4 style="font-size: 15px">
+                            <a
+                              th:href="@{/product/{slug}(slug=${product.slug})}"
+                              th:text="${product.name}"
+                            >
+                              Product Name
+                            </a>
+                          </h4>
+                          <p
+                            style="font-size: 13px"
+                            th:text="${product.shortDesc}"
+                          >
+                            Short description
+                          </p>
+                          <div
+                            class="d-flex justify-content-center flex-lg-wrap"
+                          >
+                            <p
+                              style="
+                                font-size: 15px;
+                                text-align: center;
+                                width: 100%;
+                              "
+                              class="text-dark fw-bold mb-3"
+                              th:text="|${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} đ|"
+                            >
+                              0 đ
+                            </p>
+                            <button
+                              th:attr="data-product-id=${product.id}"
+                              class="btnAddToCartHomepage mx-auto btn border border-secondary rounded-pill px-3 text-primary"
+                            >
+                              <i
+                                class="fa fa-shopping-bag me-2 text-primary"
+                              ></i>
+                              Add to cart
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Pagination -->
+                  <ul
+                    class="pagination d-flex justify-content-center mt-5 mb-3"
+                  >
+                    <!-- Previous -->
+                    <li
+                      class="page-item"
+                      th:classappend="${currentPage == 1} ? ' disabled'"
+                    >
+                      <a
+                        class="page-link"
+                        th:href="@{/?page={p}(p=${currentPage - 1})}"
+                        aria-label="Previous"
+                      >
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                    </li>
+
+                    <!-- Page Numbers -->
+                    <li
+                      class="page-item"
+                      th:each="i : ${#numbers.sequence(1, totalPages)}"
+                      th:classappend="${i == currentPage} ? ' active'"
+                    >
+                      <a
+                        class="page-link"
+                        th:href="@{/?page={p}(p=${i})}"
+                        th:text="${i}"
+                        >1</a
+                      >
+                    </li>
+
+                    <!-- Next -->
+                    <li
+                      class="page-item"
+                      th:classappend="${currentPage == totalPages} ? ' disabled'"
+                    >
+                      <a
+                        class="page-link"
+                        th:href="@{/?page={p}(p=${currentPage + 1})}"
+                        aria-label="Next"
+                      >
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                    </li>
+                  </ul>
+                  <!-- End Pagination -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+      </div>
+    </div>
+
+    <!-- Fruits Shop End-->
+
+    <!-- Featurs Start -->
+
+    <div class="container-fluid service">
+      <div class="container">
+        <h1 class="mb-5">Laptopshop - Giảm giá siêu lớn</h1>
+        <div class="row g-4 justify-content-center">
+          <!-- Chỉ hiển thị index 4-6 -->
+          <div
+            class="col-md-6 col-lg-4"
+            th:each="product, iterStat : ${products}"
+            th:if="${iterStat.index >= 4 and iterStat.index <= 6}"
+          >
+            <a th:href="@{/product/{id}(id=${product.id})}">
+              <div
+                class="service-item bg-secondary rounded border border-secondary"
+              >
+                <img
+                  th:src="@{/uploads/product/{image}(image=${product.image})}"
+                  loading="lazy"
+                  class="img-fluid rounded-top w-100"
+                  alt=""
+                />
+                <div class="px-4 rounded-bottom">
+                  <div
+                    class="service-content bg-primary text-center p-4 rounded"
+                  >
+                    <h5 class="text-white" th:text="${product.name}">
+                      Product Name
+                    </h5>
+                    <h3 class="mb-0">20% OFF</h3>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featurs End -->
+
+    <jsp:include page="client/layout/carousel" />
+
+    <!-- Bestsaler Product Start -->
+
+    <div class="container-fluid">
+      <div class="container py-5">
+        <div class="text-center mx-auto mb-5" style="max-width: 700px">
+          <h1 class="display-4">Sản Phẩm Bán Chạy Nhất</h1>
+          <p>Sản phẩm có chất lượng hàng đầu được bán chạy nhất trong quý.</p>
+        </div>
+
+        <div class="row g-4">
+          <!-- 3 sản phẩm đầu -->
+          <div
+            th:each="product, iterStat : ${bestProducts}"
+            th:if="${iterStat.index <= 2}"
+            class="col-lg-6 col-xl-4"
+          >
+            <div class="p-4 rounded bg-light">
+              <div class="row align-items-center">
+                <div class="col-6">
+                  <img
+                    th:src="@{/uploads/product/{image}(image=${product.image})}"
+                    loading="lazy"
+                    style="
+                      width: 165px;
+                      height: 165px;
+                      border-radius: 50%;
+                      object-fit: cover;
+                    "
+                    class="img-fluid rounded-circle"
+                    alt=""
+                  />
+                </div>
+                <div class="col-6">
+                  <a
+                    th:href="@{/product/{slug}(slug=${product.slug})}"
+                    class="h5"
+                    th:text="${product.name}"
+                  >
+                    Product Name
+                  </a>
+                  <div class="d-flex my-3">
+                    <i
+                      th:each="i : ${#numbers.sequence(1,5)}"
+                      class="fas fa-star"
+                      th:classappend="${i <= product.sta} ? ' text-secondary' : ''"
+                    >
+                    </i>
+                  </div>
+                  <h4
+                    class="mb-3"
+                    th:text="|${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT')} đ|"
+                  >
+                    0 đ
+                  </h4>
+                  <button
+                    th:attr="data-product-id=${product.id}"
+                    class="btnAddToCartHomepage btn border border-secondary rounded-pill px-3 text-primary"
+                  >
+                    <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to
+                    cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 sản phẩm tiếp theo -->
+          <div
+            th:each="product, iterStat : ${bestProducts}"
+            th:if="${iterStat.index > 2 and iterStat.index <= 6}"
+            class="col-md-6 col-lg-3 col-xl-3"
+          >
+            <div class="text-center">
+              <img
+                th:src="@{/uploads/product/{image}(image=${product.image})}"
+                loading="lazy"
+                class="img-fluid rounded"
+                alt=""
+              />
+              <div class="py-4">
+                <a
+                  th:href="@{/product/{slug}(slug=${product.slug})}"
+                  class="h5"
+                  th:text="${product.name}"
+                >
+                  Product Name
+                </a>
+                <div class="d-flex my-3 justify-content-center">
+                  <i
+                    th:each="i : ${#numbers.sequence(1,5)}"
+                    class="fas fa-star"
+                    th:classappend="${i <= product.sta} ? ' text-secondary' : ''"
+                  >
+                  </i>
+                </div>
+                <h4
+                  class="mb-3"
+                  th:text="|${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT')} đ|"
+                >
+                  0 đ
+                </h4>
+                <button
+                  th:attr="data-product-id=${product.id}"
+                  class="btnAddToCartHomepage btn border border-secondary rounded-pill px-3 text-primary"
+                >
+                  <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to
+                  cart
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bestsaler Product End -->
+
+    <!-- Banner Section Start-->
+
+    <!-- Banner Section End -->
+
+    <div th:replace="client/layout/feature"></div>
+
+    <div th:replace="client/layout/footer"></div>
+
+    <!-- Back to Top -->
+    <!-- <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i
+                        class="fa fa-arrow-up"></i></a> -->
+
+    <a id="fb-chat-btn" href="#" aria-label="Chat Facebook"></a>
+
+    <script>
+      (function () {
+        var pageLink = "https://m.me/280629598473620"; // thay bằng m.me của bạn
+        var btn = document.getElementById("fb-chat-btn");
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          // desktop popup, mobile mở tab mới
+          if (window.innerWidth > 600) {
+            var w = 420,
+              h = 700;
+            var left = screen.width / 2 - w / 2;
+            var top = screen.height / 2 - h / 2;
+            window.open(
+              pageLink,
+              "fbmsg",
+              "width=" +
+                w +
+                ",height=" +
+                h +
+                ",left=" +
+                left +
+                ",top=" +
+                top +
+                ",resizable=yes,toolbar=no,menubar=no,scrollbars=yes"
+            );
+          } else {
+            window.open(pageLink, "_blank");
+          }
+        });
+      })();
+    </script>
+
+    <!-- Tawk.to Script -->
+    <script type="text/javascript">
+      var Tawk_API = Tawk_API || {},
+        Tawk_LoadStart = new Date();
+      (function () {
+        var s1 = document.createElement("script"),
+          s0 = document.getElementsByTagName("script")[0];
+        s1.async = true;
+        s1.src = "https://embed.tawk.to/68d16fb28a5a741923bdc0e7/1j5p1okk3";
+        s1.charset = "UTF-8";
+        s1.setAttribute("crossorigin", "*");
+        s0.parentNode.insertBefore(s1, s0);
+      })();
+    </script>
+    <!--End of Tawk.to Script-->
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/client/lib/easing/easing.min.js"></script>
+    <script src="/client/lib/waypoints/waypoints.min.js"></script>
+    <script src="/client/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/client/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="/client/js/main.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
+  </body>
+</html>
