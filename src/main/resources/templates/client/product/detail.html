@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title th:text="${product.name + ' - Laptopshop'}"></title>
+
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="description" th:content="${product.detailDesc}" />
+    <meta
+      name="keywords"
+      th:content="${product.name + ', laptop, gaming, macbook, công nghệ'}"
+    />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+    <meta property="og:title" content="[[${product.name}]] - Laptopshop" />
+    <meta property="og:description" content="[[${product.shortDesc}]]" />
+    <meta
+      property="og:image"
+      content="https://thuong-mai-dien-tu-jmkv.onrender.com/uploads/product/[[${product.image}]]"
+    />
+    <meta
+      property="og:url"
+      content="https://thuong-mai-dien-tu-jmkv.onrender.com/product/[[${product.slug}]]"
+    />
+    <meta property="og:type" content="product" />
+    <meta property="og:site_name" content="Laptopshop" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="[[${product.name}]] - Laptopshop" />
+    <meta name="twitter:description" content="[[${product.shortDesc}]]" />
+    <meta
+      name="twitter:image"
+      content="https://thuong-mai-dien-tu-jmkv.onrender.com/uploads/product/[[${product.image}]]"
+    />
+    <meta name="twitter:site" content="@LaptopshopVN" />
+
+    <link
+      rel="canonical"
+      th:href="@{'https://thuong-mai-dien-tu-jmkv.onrender.com/product/' + ${product.slug}}"
+    />
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icon Font Stylesheet -->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <!-- Libraries Stylesheet -->
+    <link href="/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+    <link
+      href="/client/lib/owlcarousel/assets/owl.carousel.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/client/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Template Stylesheet -->
+    <link href="/client/css/style.css" rel="stylesheet" />
+    <meta name="_csrf" content="${_csrf.token}" />
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" content="${_csrf.headerName}" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Add this CSS to your stylesheet */
+      .dropdown-menu {
+        display: none;
+      }
+
+      .dropdown:hover .dropdown-menu {
+        display: block;
+        right: 0px;
+      }
+
+      h3.spec-title {
+        font-size: 1.1rem; /* nhỏ hơn mặc định */
+        font-weight: 600; /* vẫn đậm */
+        margin: 0; /* bỏ margin thừa */
+      }
+    </style>
+    <script type="application/ld+json" th:inline="javascript">
+      {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": [[${product.name}]],
+        "image": [[${'["/uploads/product/' + product.image + '"]'}]],
+        "description": [[${product.detailDesc}]],
+        "brand": {
+          "@type": "Brand",
+          "name": [[${product.factory}]]
+        },
+        "sku": [[${product.id}]],
+        "offers": {
+          "@type": "Offer",
+          "url": [[${'/product/' + product.slug}]],
+          "priceCurrency": "VND",
+          "price": [[${product.price}]],
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": [[${product.sta}]],
+          "reviewCount": [[${product.comments != null ? product.comments.size() : 0}]]
+        }
+      }
+    </script>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-4NH3R2WKXH"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-4NH3R2WKXH");
+    </script>
+  </head>
+
+  <body>
+    <!-- Spinner Start -->
+    <div
+      id="spinner"
+      class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center"
+    >
+      <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+    <!-- Spinner End -->
+
+    <div th:replace="client/layout/header"></div>
+
+    <!-- Modal Search End -->
+
+    <!-- Single Page Header start -->
+    <div style="margin-bottom: -70px" class="container-fluid page-header py-1">
+      <h2 class="text-center text-white">Chi tiết sản phẩm</h2>
+      <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item active text-white">
+          Vui chơi có thưởng khi mua trực tiếp tại cửa hàng
+        </li>
+      </ol>
+    </div>
+
+    <!-- Single Page Header End -->
+
+    <!-- Single Product Start -->
+    <div class="container-fluid py-5">
+      <div class="container py-5">
+        <div class="row g-4 mb-5">
+          <div class="col-lg-8 col-xl-9">
+            <div>
+              <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item active"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">Chi tiết sản phẩm</li>
+              </ol>
+            </div>
+            <div class="row g-4">
+              <div class="col-lg-6">
+                <div class="border rounded">
+                  <a href="#">
+                    <img
+                      loading="lazy"
+                      th:src="@{'/uploads/product/' + ${product.image}}"
+                      class="img-fluid rounded"
+                      th:alt="${product.name}"
+                    />
+                  </a>
+                </div>
+              </div>
+
+              <div
+                class="col-lg-6"
+                itemscope
+                itemtype="https://schema.org/Product"
+              >
+                <!-- Tên sản phẩm -->
+                <h2
+                  class="fw-bold mb-3"
+                  itemprop="name"
+                  th:text="${product.name}"
+                >
+                  Tên sản phẩm
+                </h2>
+
+                <!-- Nhà sản xuất / Brand -->
+                <span
+                  itemprop="brand"
+                  itemscope
+                  itemtype="https://schema.org/Brand"
+                >
+                  <meta itemprop="name" th:content="${product.factory}" />
+                </span>
+                <p class="mb-3" th:text="${product.factory}">Nhà sản xuất</p>
+
+                <!-- Giá -->
+                <h5 class="fw-bold mb-3">
+                  <span
+                    itemprop="offers"
+                    itemscope
+                    itemtype="https://schema.org/Offer"
+                  >
+                    <meta itemprop="priceCurrency" content="VND" />
+                    <meta itemprop="price" th:content="${product.price}" />
+                    <link
+                      itemprop="availability"
+                      href="https://schema.org/InStock"
+                    />
+                    <span
+                      th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}"
+                    ></span>
+                    đ
+                  </span>
+                </h5>
+
+                <!-- Rating -->
+                <div
+                  class="d-flex mb-4"
+                  itemprop="aggregateRating"
+                  itemscope
+                  itemtype="https://schema.org/AggregateRating"
+                >
+                  <meta itemprop="ratingValue" th:content="${product.sta}" />
+                  <meta
+                    itemprop="reviewCount"
+                    th:content="${product.comments != null ? product.comments.size() : 0}"
+                  />
+                  <i
+                    class="fa fa-star"
+                    th:each="i : ${#numbers.sequence(1,5)}"
+                    th:classappend="${i <= product.sta} ? ' text-secondary' : ''"
+                  ></i>
+                </div>
+
+                <!-- Mô tả ngắn -->
+                <p
+                  class="mb-4"
+                  itemprop="description"
+                  th:text="${product.shortDesc}"
+                >
+                  Mô tả ngắn
+                </p>
+
+                <!-- Số lượng -->
+                <div class="input-group quantity mb-5" style="width: 100px">
+                  <div class="input-group-btn">
+                    <button
+                      class="btn btn-sm btn-minus rounded-circle bg-light border"
+                    >
+                      <i class="fa fa-minus"></i>
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm text-center border-0"
+                    value="1"
+                    data-cart-detail-index="0"
+                  />
+                  <div class="input-group-btn">
+                    <button
+                      class="btn btn-sm btn-plus rounded-circle bg-light border"
+                    >
+                      <i class="fa fa-plus"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Form thêm vào giỏ hàng -->
+                <form
+                  th:action="@{/add-product-from-view-detail}"
+                  method="post"
+                >
+                  <input
+                    type="hidden"
+                    th:name="${_csrf.parameterName}"
+                    th:value="${_csrf.token}"
+                  />
+                  <input type="hidden" name="id" th:value="${product.id}" />
+                  <input type="hidden" name="quantity" value="1" />
+                  <button
+                    type="submit"
+                    class="btnAddToCartHomepage btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
+                  >
+                    <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to
+                    cart
+                  </button>
+                </form>
+              </div>
+
+              <div class="col-lg-12">
+                <nav>
+                  <div class="nav nav-tabs mb-3">
+                    <button
+                      class="nav-link active border-white border-bottom-0"
+                      type="button"
+                      role="tab"
+                      id="nav-about-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#nav-about"
+                      aria-controls="nav-about"
+                      aria-selected="true"
+                    >
+                      Description
+                    </button>
+                    <button
+                      class="nav-link border-white border-bottom-0"
+                      type="button"
+                      role="tab"
+                      id="nav-mission-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#nav-mission"
+                      aria-controls="nav-mission"
+                      aria-selected="false"
+                    >
+                      Reviews
+                    </button>
+                  </div>
+                </nav>
+
+                <div class="tab-content mb-5">
+                  <!-- Tab mô tả -->
+                  <div
+                    class="tab-pane active"
+                    id="nav-about"
+                    role="tabpanel"
+                    aria-labelledby="nav-about-tab"
+                  >
+                    <h2>Mô tả chi tiết</h2>
+                    <p th:text="${product.detailDesc}">Mô tả chi tiết</p>
+
+                    <div class="px-2">
+                      <div class="row g-4">
+                        <div class="col-12">
+                          <div
+                            class="row bg-light align-items-center text-center justify-content-center py-2"
+                          >
+                            <div class="col-5">
+                              <h3 class="spec-title mb-0 fw-bold">
+                                Thương hiệu (Brand)
+                              </h3>
+                            </div>
+                            <div class="col-7">
+                              <p class="mb-0">
+                                Dell – một thương hiệu laptop uy tín, nổi tiếng
+                                với độ bền và hiệu năng ổn định, phù hợp cho cả
+                                làm việc văn phòng lẫn giải trí.
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="row text-center align-items-center justify-content-center py-2"
+                          >
+                            <div class="col-5">
+                              <h3 class="spec-title mb-0 fw-bold">Model</h3>
+                            </div>
+                            <div class="col-7">
+                              <p class="mb-0">
+                                XPS 15 9530 – dòng laptop cao cấp với thiết kế
+                                mỏng nhẹ, màn hình sắc nét, thích hợp cho người
+                                dùng chuyên nghiệp và sáng tạo nội dung.
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="row bg-light text-center align-items-center justify-content-center py-2"
+                          >
+                            <div class="col-5">
+                              <h3 class="spec-title mb-0 fw-bold">CPU</h3>
+                            </div>
+                            <div class="col-7">
+                              <p class="mb-0">
+                                Intel Core i7-13700H – bộ vi xử lý hiệu năng
+                                cao, xử lý đa nhiệm mượt mà, phù hợp với các
+                                phần mềm văn phòng, lập trình, thiết kế đồ họa
+                                và giải trí.
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="row text-center align-items-center justify-content-center py-2"
+                          >
+                            <div class="col-5">
+                              <h3 class="spec-title mb-0 fw-bold">
+                                Card đồ họa (GPU)
+                              </h3>
+                            </div>
+                            <div class="col-7">
+                              <p class="mb-0">
+                                NVIDIA RTX 4060 8GB – hỗ trợ xử lý hình ảnh và
+                                video 3D, chơi game với đồ họa cao, đồng thời
+                                tăng hiệu quả cho các tác vụ đồ họa và thiết kế.
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="row bg-light text-center align-items-center justify-content-center py-2"
+                          >
+                            <div class="col-5">
+                              <h3 class="spec-title mb-0 fw-bold">RAM</h3>
+                            </div>
+                            <div class="col-7">
+                              <p class="mb-0">
+                                32GB DDR5 4800MHz – bộ nhớ lớn, đảm bảo đa nhiệm
+                                mượt mà, mở nhiều ứng dụng cùng lúc mà không lo
+                                giật lag.
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="row text-center align-items-center justify-content-center py-2"
+                          >
+                            <div class="col-5">
+                              <h3 class="spec-title mb-0 fw-bold">
+                                Dung lượng lưu trữ (Storage)
+                              </h3>
+                            </div>
+                            <div class="col-7">
+                              <p class="mb-0">
+                                1TB NVMe SSD – không gian lưu trữ rộng rãi, tốc
+                                độ truy xuất dữ liệu nhanh, giúp khởi động hệ
+                                điều hành và ứng dụng chỉ trong vài giây.
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="row bg-light text-center align-items-center justify-content-center py-2"
+                          >
+                            <div class="col-5">
+                              <h3 class="spec-title mb-0 fw-bold">
+                                Màn hình (Display)
+                              </h3>
+                            </div>
+                            <div class="col-7">
+                              <p class="mb-0">
+                                15.6" 4K OLED cảm ứng – hiển thị hình ảnh sống
+                                động, màu sắc trung thực, trải nghiệm xem phim,
+                                hình ảnh và thiết kế chuyên nghiệp tốt hơn.
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="row text-center align-items-center justify-content-center py-2"
+                          >
+                            <div class="col-5">
+                              <h3 class="spec-title mb-0 fw-bold">
+                                Pin (Battery)
+                              </h3>
+                            </div>
+                            <div class="col-7">
+                              <p class="mb-0">
+                                97Wh, sử dụng lên tới 12 giờ – thoải mái làm
+                                việc cả ngày mà không cần cắm sạc, phù hợp cho
+                                công việc văn phòng và di chuyển.
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="row bg-light text-center align-items-center justify-content-center py-2"
+                          >
+                            <div class="col-5">
+                              <h3 class="spec-title mb-0 fw-bold">
+                                Trọng lượng (Weight)
+                              </h3>
+                            </div>
+                            <div class="col-7">
+                              <p class="mb-0">
+                                2.1 kg – thiết kế gọn nhẹ, dễ dàng di chuyển
+                                nhưng vẫn giữ được độ chắc chắn và bền bỉ của
+                                máy.
+                              </p>
+                            </div>
+                          </div>
+                          <div
+                            class="row text-center align-items-center justify-content-center py-2"
+                          >
+                            <div class="col-5">
+                              <h3 class="spec-title mb-0 fw-bold">
+                                Hệ điều hành (OS)
+                              </h3>
+                            </div>
+                            <div class="col-7">
+                              <p class="mb-0">
+                                Windows 11 Pro – giao diện thân thiện, bảo mật
+                                tốt, hỗ trợ đầy đủ các ứng dụng văn phòng và
+                                giải trí hiện nay.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Tab bình luận -->
+                  <div
+                    class="tab-pane"
+                    id="nav-mission"
+                    role="tabpanel"
+                    aria-labelledby="nav-mission-tab"
+                  >
+                    <!-- Nếu có comments -->
+                    <div th:if="${comments != null and !comments.isEmpty()}">
+                      <div th:each="comment : ${comments}" class="d-flex mb-3">
+                        <!-- Avatar -->
+                        <img
+                          th:if="${comment.user != null and comment.user.avatar != null}"
+                          th:src="@{'/uploads/avatar/' + ${comment.user.avatar}}"
+                          class="img-fluid rounded-circle p-3"
+                          style="width: 100px; height: 100px; object-fit: cover"
+                          th:alt="${comment.user.fullName}"
+                        />
+                        <img
+                          th:unless="${comment.user != null and comment.user.avatar != null}"
+                          th:src="@{/uploads/avatar/default.jpg}"
+                          class="img-fluid rounded-circle p-3"
+                          style="width: 100px; height: 100px; object-fit: cover"
+                          alt="Anonymous"
+                        />
+
+                        <!-- Nội dung -->
+                        <div>
+                          <div class="d-flex justify-content-between">
+                            <h5
+                              th:text="${comment.user != null ? comment.user.fullName : 'Ẩn danh'}"
+                            >
+                              Người dùng
+                            </h5>
+
+                            <!-- Rating -->
+                            <div style="margin-left: 20px" class="d-flex mb-3">
+                              <i
+                                class="fa fa-star"
+                                th:each="i : ${#numbers.sequence(1,5)}"
+                                th:classappend="${i <= comment.sta} ? ' text-secondary' : ''"
+                              ></i>
+                            </div>
+                          </div>
+                          <p th:text="${comment.description}">
+                            Nội dung bình luận
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Form thêm bình luận -->
+              <form th:action="@{/confirm-comment}" method="post">
+                <input
+                  type="hidden"
+                  th:name="${_csrf.parameterName}"
+                  th:value="${_csrf.token}"
+                />
+
+                <h4 class="mb-4 fw-bold">Hãy để lại 1 bình luận</h4>
+
+                <div class="col-lg-12 mb-4">
+                  <div class="mb-2"><b>Đánh giá</b></div>
+
+                  <div
+                    class="form-check form-check-inline"
+                    th:each="i : ${#numbers.sequence(1,5)}"
+                  >
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      th:id="'sort-' + ${i}"
+                      th:value="${i}"
+                      name="radio-sort"
+                      th:checked="${i == 5}"
+                    />
+                    <label class="form-check-label" th:for="'sort-' + ${i}">
+                      <i
+                        class="fa fa-star text-secondary"
+                        th:each="star : ${#numbers.sequence(1,i)}"
+                      ></i>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="row g-4">
+                  <div class="col-lg-12">
+                    <div class="border-bottom rounded my-4">
+                      <textarea
+                        name="description"
+                        class="form-control border-0"
+                        cols="30"
+                        rows="2"
+                        placeholder="Miêu tả của bạn *"
+                        required
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <input type="hidden" name="id" th:value="${product.id}" />
+
+                <button
+                  style="width: 200px"
+                  id="btnConfirmComment"
+                  class="btn border border-secondary text-primary rounded-pill px-4 py-3"
+                >
+                  Đăng bình luận
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="col-lg-4 col-xl-3">
+            <div class="row g-4 fruite">
+              <!-- Sản phẩm bán chạy -->
+              <div class="col-lg-12">
+                <h2 class="mb-4">Sản phẩm bán chạy nhất</h2>
+
+                <div
+                  th:each="product, iterStat : ${productCarousel}"
+                  th:if="${iterStat.index < 6}"
+                  class="d-flex align-items-center justify-content-start mb-3"
+                >
+                  <!-- Hình ảnh -->
+                  <div
+                    class="rounded"
+                    style="width: 100px; height: 85px; margin-right: 10px"
+                  >
+                    <img
+                      loading="lazy"
+                      th:src="@{/uploads/product/{img}(img=${product.image})}"
+                      class="img-fluid rounded"
+                      alt="Image"
+                    />
+                  </div>
+
+                  <!-- Thông tin sản phẩm -->
+                  <div>
+                    <h6 style="font-size: 15px" class="mb-2">
+                      <a
+                        th:href="@{/product/{id}(id=${product.id})}"
+                        th:text="${product.name}"
+                      ></a>
+                    </h6>
+
+                    <!-- Rating -->
+                    <div class="d-flex mb-2">
+                      <i
+                        class="fas fa-star"
+                        th:classappend="${product.sta >= 1} ? ' text-secondary' : ''"
+                      ></i>
+                      <i
+                        class="fas fa-star"
+                        th:classappend="${product.sta >= 2} ? ' text-secondary' : ''"
+                      ></i>
+                      <i
+                        class="fas fa-star"
+                        th:classappend="${product.sta >= 3} ? ' text-secondary' : ''"
+                      ></i>
+                      <i
+                        class="fas fa-star"
+                        th:classappend="${product.sta >= 4} ? ' text-secondary' : ''"
+                      ></i>
+                      <i
+                        class="fas fa-star"
+                        th:classappend="${product.sta >= 5} ? ' text-secondary' : ''"
+                      ></i>
+                    </div>
+
+                    <!-- Giá -->
+                    <div class="d-flex mb-2">
+                      <h5 class="fw-bold me-2">
+                        <span
+                          th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}"
+                        ></span>
+                        đ
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Nút xem thêm -->
+                <div class="d-flex justify-content-center my-4">
+                  <a
+                    th:href="@{/products}"
+                    class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100"
+                  >
+                    Xem thêm
+                  </a>
+                </div>
+              </div>
+
+              <!-- Banner -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="company-info p-4 rounded shadow-sm bg-light"
+      style="margin-top: 50px; font-size: 16px; color: #333; line-height: 1.6"
+    >
+      <p>
+        Laptopshop là một trong những nhà cung cấp thiết bị công nghệ hàng đầu
+        tại Việt Nam, chuyên phân phối các dòng laptop, máy tính để bàn, linh
+        kiện và phụ kiện chính hãng từ các thương hiệu nổi tiếng như ASUS, Dell,
+        HP, Lenovo, Acer và Apple. Với hơn 10 năm kinh nghiệm trong ngành, chúng
+        tôi cam kết mang đến cho khách hàng sản phẩm chất lượng cao, giá cả cạnh
+        tranh và dịch vụ hậu mãi tận tâm. Chúng tôi đảm bảo mọi sản phẩm đều
+        được kiểm tra nghiêm ngặt trước khi đến tay khách hàng.
+        <br /><br />
+        Chúng tôi luôn hướng tới việc xây dựng mối quan hệ lâu dài với khách
+        hàng bằng cách cung cấp những giải pháp công nghệ tối ưu, tư vấn chuyên
+        nghiệp và hỗ trợ kỹ thuật 24/7. Laptopshop thường xuyên tổ chức các
+        chương trình khuyến mãi, hội thảo công nghệ và trải nghiệm sản phẩm trực
+        tiếp, giúp khách hàng dễ dàng tiếp cận với các công nghệ mới nhất trên
+        thị trường.
+        <br /><br />
+        Ngoài ra, Laptopshop còn cung cấp các dịch vụ bảo hành mở rộng, tư vấn
+        nâng cấp phần cứng và hướng dẫn sử dụng chi tiết cho từng loại laptop,
+        giúp khách hàng khai thác tối đa hiệu suất sản phẩm. Chúng tôi tin rằng
+        mỗi chiếc máy tính không chỉ là công cụ mà còn là nguồn cảm hứng sáng
+        tạo, hỗ trợ học tập, làm việc và giải trí.
+        <br /><br />
+        Sứ mệnh của Laptopshop là trở thành địa chỉ tin cậy cho mọi nhu cầu về
+        công nghệ của bạn. Hãy đến với Laptopshop để trải nghiệm sự khác biệt về
+        chất lượng sản phẩm, dịch vụ tận tâm và trải nghiệm khách hàng hoàn hảo.
+      </p>
+    </div>
+    <div style="display: none" class="h-product">
+      <span class="p-name" th:text="${product.name}">Tên sản phẩm</span>
+      <img class="u-photo" th:src="@{'/uploads/product/' + ${product.image}}" />
+      <span class="p-brand" th:text="${product.factory}">Nhà sản xuất</span>
+      <span class="p-price" th:text="${product.price}">1000000</span>
+      <span class="p-currency">VND</span>
+    </div>
+
+    <!-- Single Product End -->
+
+    <div th:replace="client/layout/footer"></div>
+
+    <!-- Back to Top -->
+    <a
+      href="#"
+      class="btn btn-primary border-3 border-primary rounded-circle back-to-top"
+      ><i class="fa fa-arrow-up"></i
+    ></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/client/lib/easing/easing.min.js"></script>
+    <script src="/client/lib/waypoints/waypoints.min.js"></script>
+    <script src="/client/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/client/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="/client/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
+  </body>
+</html>

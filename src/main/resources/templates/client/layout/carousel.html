@@ -11,7 +11,7 @@
         <div class="vesitable-img">
           <img
             loading="lazy"
-            th:src="@{/images/product/{img}(img=${product.image})}"
+            th:src="@{/uploads/product/{img}(img=${product.image})}"
             class="img-fluid w-100 rounded-top"
             alt=""
           />
@@ -37,7 +37,7 @@
             <p
               style="font-size: 15px; text-align: center; width: 100%"
               class="text-dark fw-bold mb-3"
-              th:text="${#numbers.formatInteger(product.price, Locale.getDefault())} + ' đ'"
+              th:text="${#numbers.formatInteger(product.price, 0)} + ' đ'"
             ></p>
             <form
               th:action="@{/add-product-to-cart/{id}(id=${product.id})}"

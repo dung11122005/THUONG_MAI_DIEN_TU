@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sản Phẩm - Laptopshop</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icon Font Stylesheet -->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <!-- Libraries Stylesheet -->
+    <link href="/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+    <link
+      href="/client/lib/owlcarousel/assets/owl.carousel.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/client/css/bootstrap.min.css" rel="stylesheet" />
+    <meta name="_csrf" content="${_csrf.token}" />
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" content="${_csrf.headerName}" />
+    <!-- Template Stylesheet -->
+    <link href="/client/css/style.css" rel="stylesheet" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Add this CSS to your stylesheet */
+      .dropdown-menu {
+        display: none;
+      }
+
+      .dropdown:hover .dropdown-menu {
+        display: block;
+        right: 0px;
+      }
+
+      .page-link.disabled {
+        color: var(--bs-pagination-disabled-color);
+        pointer-events: none;
+        background-color: var(--bs-pagination-disabled-bg);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Spinner Start -->
+    <div
+      id="spinner"
+      class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center"
+    >
+      <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+    <!-- Spinner End -->
+    <div th:replace="client/layout/header"></div>
+
+    <!-- Single Product Start -->
+    <div style="margin-top: 70px" class="container-fluid py-5">
+      <div class="container py-5">
+        <div class="row g-4">
+          <div>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  Danh Sách Sản Phẩm
+                </li>
+              </ol>
+            </nav>
+          </div>
+
+          <div style="margin-top: -10px" class="row g-4 fruite">
+            <div class="col-12 col-md-3">
+              <div class="row g-4">
+                <!-- Hãng sản xuất -->
+                <div class="col-12" id="factoryFilter">
+                  <div class="mb-2"><b>Hãng sản xuất</b></div>
+                  <div
+                    class="form-check form-check-inline"
+                    th:each="factory, iterStat : ${factories}"
+                  >
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      th:id="'factory-' + ${iterStat.index + 1}"
+                      th:value="${factory}"
+                      name="factories"
+                    />
+                    <label
+                      class="form-check-label"
+                      th:for="'factory-' + ${iterStat.index + 1}"
+                      th:text="${factory}"
+                      >Factory</label
+                    >
+                  </div>
+                </div>
+
+                <!-- Mục đích sử dụng -->
+                <div class="col-12" id="targetFilter">
+                  <div class="mb-2"><b>Mục đích sử dụng</b></div>
+                  <div
+                    class="form-check form-check-inline"
+                    th:each="target, iterStat : ${targets}"
+                  >
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      th:id="'target-' + ${iterStat.index + 1}"
+                      th:value="${target}"
+                      name="targets"
+                    />
+                    <label
+                      class="form-check-label"
+                      th:for="'target-' + ${iterStat.index + 1}"
+                    >
+                      <span th:switch="${target}">
+                        <span th:case="'GAMING'">Gaming</span>
+                        <span th:case="'SINHVIEN-VANPHONG'"
+                          >Sinh viên - văn phòng</span
+                        >
+                        <span th:case="'THIET-KE-DO-HOA'">Thiết kế đồ họa</span>
+                        <span th:case="'MONG-NHE'">Mỏng nhẹ</span>
+                        <span th:case="'DOANH-NHAN'">Doanh nhân</span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Mức giá -->
+                <div class="col-12" id="priceFilter">
+                  <div class="mb-2"><b>Mức giá</b></div>
+                  <div
+                    class="form-check form-check-inline"
+                    th:each="price, iterStat : ${prices}"
+                  >
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      th:id="'price-' + ${iterStat.index + 1}"
+                      th:value="${price}"
+                      name="prices"
+                    />
+                    <label
+                      class="form-check-label"
+                      th:for="'price-' + ${iterStat.index + 1}"
+                    >
+                      <span th:switch="${price}">
+                        <span th:case="'duoi-10-trieu'">Dưới 10 triệu</span>
+                        <span th:case="'10-15-trieu'">Từ 10 - 15 triệu</span>
+                        <span th:case="'15-20-trieu'">Từ 15 - 20 triệu</span>
+                        <span th:case="'tren-20-trieu'">Trên 20 triệu</span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <div class="mb-2"><b>Đánh giá</b></div>
+                  <!-- Lặp từ 1 -> 5 sao -->
+                  <div
+                    class="form-check form-check-inline"
+                    th:each="i : ${#numbers.sequence(1,5)}"
+                  >
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      th:id="'sort-' + ${i}"
+                      th:value="${i}"
+                      name="radio-star"
+                    />
+                    <label class="form-check-label" th:for="'sort-' + ${i}">
+                      <!-- Render số sao tương ứng -->
+                      <i
+                        class="fa fa-star text-secondary"
+                        th:each="star : ${#numbers.sequence(1,i)}"
+                      ></i>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="mb-2"><b>Sắp xếp</b></div>
+
+                  <!-- Lặp qua danh sách các lựa chọn sắp xếp -->
+                  <div
+                    class="form-check form-check-inline"
+                    th:each="sort, iterStat : ${sorts}"
+                  >
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      th:id="'sort-' + ${iterStat.index + 1}"
+                      th:value="${sort}"
+                      name="radio-sort"
+                      th:checked="${sort == 'gia-nothing'}"
+                    />
+
+                    <label
+                      class="form-check-label"
+                      th:for="'sort-' + ${iterStat.index + 1}"
+                    >
+                      <span th:switch="${sort}">
+                        <span th:case="'gia-tang-dan'">Giá tăng dần</span>
+                        <span th:case="'gia-giam-dan'">Giá giảm dần</span>
+                        <span th:case="'gia-nothing'">Không sắp xếp</span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <button
+                    class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4"
+                    id="btnFilter"
+                    type="submit"
+                    th:text="'Lọc Sản Phẩm'"
+                  ></button>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top: -30px" class="col-12 col-md-9 text-center">
+              <!-- CSRF -->
+              <input
+                type="hidden"
+                th:name="${_csrf.parameterName}"
+                th:value="${_csrf.token}"
+              />
+
+              <!-- Thanh tìm kiếm -->
+              <div class="position-relative mx-auto mb-5">
+                <input
+                  name="SearchProduct"
+                  class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill"
+                  type="text"
+                  placeholder="Tìm kiếm"
+                />
+                <button
+                  type="button"
+                  id="searchButton"
+                  class="btn btn-primary border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100"
+                  style="top: 0; right: 25%"
+                >
+                  Xác nhận
+                </button>
+              </div>
+
+              <!-- Kết quả sản phẩm -->
+              <div class="row g-4">
+                <!-- Nếu không có sản phẩm -->
+                <h3 th:if="${totalPages == 0}">Không tìm thấy sản phẩm</h3>
+
+                <!-- Danh sách sản phẩm -->
+                <div class="col-md-6 col-lg-4" th:each="product : ${products}">
+                  <div class="rounded position-relative fruite-item">
+                    <div class="fruite-img">
+                      <img
+                        loading="lazy"
+                        th:src="@{'/uploads/product/' + ${product.image}}"
+                        class="img-fluid w-100 rounded-top"
+                        alt=""
+                      />
+                    </div>
+                    <div
+                      class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                      style="top: 10px; left: 10px"
+                    >
+                      Laptop
+                    </div>
+                    <div
+                      class="p-4 border border-secondary border-top-0 rounded-bottom"
+                    >
+                      <h4 style="font-size: 15px">
+                        <a
+                          th:href="@{'/product/' + ${product.slug}}"
+                          th:text="${product.name}"
+                          >Tên sản phẩm</a
+                        >
+                      </h4>
+                      <p style="font-size: 13px" th:text="${product.shortDesc}">
+                        Mô tả ngắn
+                      </p>
+                      <div
+                        class="d-flex flex-lg-wrap justify-content-center flex-column"
+                      >
+                        <p
+                          style="
+                            font-size: 15px;
+                            text-align: center;
+                            width: 100%;
+                          "
+                          class="text-dark fw-bold mb-3"
+                          th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"
+                        >
+                          0 đ
+                        </p>
+
+                        <!-- Form Add to Cart -->
+                        <form
+                          th:action="@{'/add-product-to-cart/' + ${product.id}}"
+                          method="post"
+                        >
+                          <input
+                            type="hidden"
+                            th:name="${_csrf.parameterName}"
+                            th:value="${_csrf.token}"
+                          />
+                          <button
+                            th:attr="data-product-id=${product.id}"
+                            class="btnAddToCartHomepage mx-auto btn border border-secondary rounded-pill px-3 text-primary"
+                          >
+                            <i class="fa fa-shopping-bag me-2 text-primary"></i>
+                            Add to cart
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Pagination -->
+                <div
+                  class="pagination d-flex justify-content-center mt-5"
+                  th:if="${totalPages != 0}"
+                >
+                  <!-- Previous -->
+                  <li class="page-item">
+                    <a
+                      th:classappend="${currentPage == 1} ? 'disabled page-link' : 'page-link'"
+                      th:href="@{'/products?page=' + (${currentPage - 1}) + ${queryString}}"
+                      aria-label="Previous"
+                    >
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+
+                  <!-- Page numbers -->
+                  <li
+                    class="page-item"
+                    th:each="i : ${#numbers.sequence(1, totalPages)}"
+                  >
+                    <a
+                      th:classappend="${i == currentPage} ? 'active page-link' : 'page-link'"
+                      th:href="@{'/products?page=' + ${i} + ${queryString}}"
+                      th:text="${i}"
+                      >1</a
+                    >
+                  </li>
+
+                  <!-- Next -->
+                  <li class="page-item">
+                    <a
+                      th:classappend="${currentPage == totalPages} ? 'disabled page-link' : 'page-link'"
+                      th:href="@{'/products?page=' + (${currentPage + 1}) + ${queryString}}"
+                      aria-label="Next"
+                    >
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Single Product End -->
+
+    <div th:replace="client/layout/footer"></div>
+
+    <!-- Back to Top -->
+    <a
+      href="#"
+      class="btn btn-primary border-3 border-primary rounded-circle back-to-top"
+      ><i class="fa fa-arrow-up"></i
+    ></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/client/lib/easing/easing.min.js"></script>
+    <script src="/client/lib/waypoints/waypoints.min.js"></script>
+    <script src="/client/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/client/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="/client/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
+  </body>
+</html>

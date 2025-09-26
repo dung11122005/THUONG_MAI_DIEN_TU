@@ -74,8 +74,8 @@ public class SecurityConfiguration {
                     .dispatcherTypeMatchers(DispatcherType.FORWARD,
                             DispatcherType.INCLUDE)
                     .permitAll()
-                    .requestMatchers("/", "/register", "/product/**", "/products/**",
-                            "/client/**", "/css/**", "/js/**", "/images/**", "uploads/**") // https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html#match-requests
+                    .requestMatchers("/", "/register", "/products", "/product/**",
+                            "/client/**", "/css/**", "/js/**", "/images/**", "/uploads/**", "/sitemap.xml", "/robots.txt") // https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html#match-requests
                     .permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .requestMatchers("/shipped/**").hasAnyRole("SHIPPED", "ADMIN")

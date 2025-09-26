@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /login/
+Allow: /
+
+Sitemap: https://thuong-mai-dien-tu-jmkv.onrender.com/sitemap.xml
