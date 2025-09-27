@@ -1,5 +1,7 @@
 package com.example.tmdt.controller.client;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -89,6 +91,9 @@ public class ItemController {
         model.addAttribute("productCarousel", productCarousel);
         model.addAttribute("comments", comments != null ? comments : Collections.emptyList());
         model.addAttribute("id", pr.getId());
+        String productLink = "https://thuong-mai-dien-tu-jmkv.onrender.com/product/" + pr.getSlug();
+        model.addAttribute("productLink", productLink);
+
     
         return "client/product/detail";
     }

@@ -20,8 +20,9 @@
     />
     <meta
       property="og:url"
-      content="https://thuong-mai-dien-tu-jmkv.onrender.com/product/[[${product.slug}]]"
+      th:content="@{'https://thuong-mai-dien-tu-jmkv.onrender.com/product/' + ${product.slug}}"
     />
+
     <meta property="og:type" content="product" />
     <meta property="og:site_name" content="Laptopshop" />
 
@@ -76,6 +77,14 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      integrity="sha512-..."
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
     <style>
       /* Add this CSS to your stylesheet */
       .dropdown-menu {
@@ -302,6 +311,16 @@
                     cart
                   </button>
                 </form>
+                <a
+                  th:href="@{|https://www.facebook.com/sharer/sharer.php?u=${productLink}|}"
+                  target="_blank"
+                  class="facebook-share"
+                >
+                  <i
+                    class="fab fa-facebook-square fa-2x"
+                    style="color: #1877f2"
+                  ></i>
+                </a>
               </div>
 
               <div class="col-lg-12">
