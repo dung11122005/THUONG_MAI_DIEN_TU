@@ -12,15 +12,16 @@
     />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <meta property="og:title" content="[[${product.name}]] - Laptopshop" />
-    <meta property="og:description" content="[[${product.shortDesc}]]" />
+    <meta property="og:title" th:content="${product.name} + ' - Laptopshop'" />
+    <meta property="og:description" th:content="${product.shortDesc}" />
     <meta
       property="og:image"
-      content="https://thuong-mai-dien-tu-jmkv.onrender.com/uploads/product/[[${product.image}]]"
+      th:content="@{'/uploads/product/' + ${product.image}}"
     />
+
     <meta
       property="og:url"
-      th:content="@{'https://thuong-mai-dien-tu-jmkv.onrender.com/product/' + ${product.slug}}"
+      th:content="@{'https://laptopshop247.click/product/' + ${product.slug}}"
     />
 
     <meta property="og:type" content="product" />
@@ -31,13 +32,13 @@
     <meta name="twitter:description" content="[[${product.shortDesc}]]" />
     <meta
       name="twitter:image"
-      content="https://thuong-mai-dien-tu-jmkv.onrender.com/uploads/product/[[${product.image}]]"
+      content="https://laptopshop247.click/uploads/product/[[${product.image}]]"
     />
     <meta name="twitter:site" content="@LaptopshopVN" />
 
     <link
       rel="canonical"
-      th:href="@{'https://thuong-mai-dien-tu-jmkv.onrender.com/product/' + ${product.slug}}"
+      th:href="@{'https://laptopshop247.click/product/' + ${product.slug}}"
     />
 
     <!-- Google Web Fonts -->

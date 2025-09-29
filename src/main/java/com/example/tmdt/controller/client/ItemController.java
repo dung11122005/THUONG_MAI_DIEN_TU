@@ -91,7 +91,7 @@ public class ItemController {
         model.addAttribute("productCarousel", productCarousel);
         model.addAttribute("comments", comments != null ? comments : Collections.emptyList());
         model.addAttribute("id", pr.getId());
-        String productLink = "https://thuong-mai-dien-tu-jmkv.onrender.com/product/" + pr.getSlug();
+        String productLink = "https://laptopshop247.click/product/" + pr.getSlug();
         model.addAttribute("productLink", productLink);
 
     

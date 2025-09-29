@@ -1,5 +1,6 @@
 package com.example.tmdt.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -144,6 +145,39 @@ public class OrderService {
 
         }
         return products;
+    }
+
+    public Order createOrder(double totalPrice,String  receiverName, String receiverAddress, String receiverPhone, String paymentMethod) {
+        Order order = new Order();
+        order.setReceiverName(receiverName);
+        order.setReceiverAddress(receiverAddress);
+        order.setReceiverPhone(receiverPhone);
+        order.setStatus("PENDING");
+        order.setTotalPrice(totalPrice);
+        order.setPaymentMethod(paymentMethod);
+        order.setCreatedAt(LocalDateTime.now());
+        return orderRepository.save(order);
+    }
+
+    public void markAsPaid(Long orderId) {
+        orderRepository.findById(orderId).ifPresent(order -> {
+            order.setStatus("PAID");
+            orderRepository.save(order);
+        });
+    }
+
+    public void markAsFailed(Long orderId) {
+        orderRepository.findById(orderId).ifPresent(order -> {
+            order.setStatus("FAILED");
+            orderRepository.save(order);
+        });
+    }
+
+    public void markAsWaitingDelivery(Long orderId) {
+        orderRepository.findById(orderId).ifPresent(order -> {
+            order.setStatus("WAITING_DELIVERY");
+            orderRepository.save(order);
+        });
     }
 
 }
