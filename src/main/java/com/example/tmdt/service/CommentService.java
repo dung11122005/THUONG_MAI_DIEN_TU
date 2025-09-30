@@ -23,6 +23,10 @@ public class CommentService {
         this.productRepository = productRepository;
     }
 
+    public List<Comment> getcmtByproduct(Long id) {
+        return this.commentRepository.findByProduct_Id(id);
+    }
+
     public void handleConfirmComment(int star, String description, long idProduct, User currentUser,
             Product product) {
 

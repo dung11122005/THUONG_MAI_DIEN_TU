@@ -1,8 +1,48 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Trang chủ - Laptopshop</title>
+
+    <link rel="canonical" href="https://laptopshop247.click" />
+
+    <meta
+      name="description"
+      content="Cửa hàng TMDT – Laptop Dell, HP, Macbook chính hãng, giá tốt, 
+      giao hàng nhanh, nhiều khuyến mãi hấp dẫn. 
+      nhân viên tư vấn nhiệt tình nhiều ưu đãi, bảo hành chính hãng."
+    />
+
+    <meta
+      property="og:title"
+      content="Cửa hàng laptop TMDT – Laptop chính hãng, giá tốt"
+    />
+    <meta
+      property="og:description"
+      content="Mua laptop Dell, HP, Macbook chính hãng với giá tốt, giao hàng nhanh tại TMDT"
+    />
+    <meta
+      property="og:image"
+      content="https://laptopshop247.click/client/img/home-banner.jpg"
+    />
+    <meta property="og:url" content="https://laptopshop247.click" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Cửa hàng TMDT – Laptop chính hãng, giá tốt"
+    />
+    <meta
+      name="twitter:description"
+      content="Mua laptop Dell, HP, Macbook chính hãng với giá tốt, giao hàng nhanh tại TMDT"
+    />
+    <meta
+      name="twitter:image"
+      content="https://laptopshop247.click/client/img/home-banner.jpg"
+    />
+    <meta name="twitter:url" content="https://laptopshop247.click" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="client/img/iconLaptopShop.png" />
@@ -92,6 +132,20 @@
         background-color: var(--bs-pagination-disabled-bg);
       }
     </style>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-4NH3R2WKXH"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-4NH3R2WKXH");
+    </script>
   </head>
 
   <body>
@@ -118,7 +172,7 @@
         <div class="tab-class text-center">
           <div class="row g-4">
             <div class="col-lg-4 text-start">
-              <h1>Sản phẩm nổi bật</h1>
+              <h2>Sản phẩm nổi bật</h2>
             </div>
             <div class="col-lg-8 text-end">
               <ul class="nav nav-pills d-inline-flex text-center mb-5">
@@ -152,7 +206,7 @@
                             loading="lazy"
                             th:src="@{/uploads/product/{image}(image=${product.image})}"
                             class="img-fluid w-100 rounded-top"
-                            alt=""
+                            th:alt="${product.name}"
                           />
                         </div>
                         <div
@@ -269,7 +323,7 @@
 
     <div class="container-fluid service">
       <div class="container">
-        <h1 class="mb-5">Laptopshop - Giảm giá siêu lớn</h1>
+        <h2 class="mb-5">Laptopshop - Giảm giá siêu lớn</h2>
         <div class="row g-4 justify-content-center">
           <!-- Chỉ hiển thị index 4-6 -->
           <div
@@ -285,7 +339,7 @@
                   th:src="@{/uploads/product/{image}(image=${product.image})}"
                   loading="lazy"
                   class="img-fluid rounded-top w-100"
-                  alt=""
+                  th:alt="${product.name}"
                 />
                 <div class="px-4 rounded-bottom">
                   <div
@@ -313,7 +367,7 @@
     <div class="container-fluid">
       <div class="container py-5">
         <div class="text-center mx-auto mb-5" style="max-width: 700px">
-          <h1 class="display-4">Sản Phẩm Bán Chạy Nhất</h1>
+          <h2 class="display-4">Sản Phẩm Bán Chạy Nhất</h2>
           <p>Sản phẩm có chất lượng hàng đầu được bán chạy nhất trong quý.</p>
         </div>
 
@@ -337,7 +391,7 @@
                       object-fit: cover;
                     "
                     class="img-fluid rounded-circle"
-                    alt=""
+                    th:alt="${product.name}"
                   />
                 </div>
                 <div class="col-6">
@@ -385,7 +439,7 @@
                 th:src="@{/uploads/product/{image}(image=${product.image})}"
                 loading="lazy"
                 class="img-fluid rounded"
-                alt=""
+                th:alt="${product.name}"
               />
               <div class="py-4">
                 <a
@@ -444,6 +498,20 @@
     <!-- <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i
                         class="fa fa-arrow-up"></i></a> -->
 
+    <div style="display: none" itemscope itemtype="https://schema.org/Product">
+      <h2 itemprop="name">Dell XPS 15 9530</h2>
+      <img
+        itemprop="image"
+        src="/uploads/product/laptop-xps15.png"
+        alt="Dell XPS 15 9530"
+      />
+      <p itemprop="description">Laptop hiệu năng cao, màn hình 4K OLED</p>
+      <span itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+        <span itemprop="price">45000000</span> đ
+        <link itemprop="availability" href="https://schema.org/InStock" />
+      </span>
+    </div>
+
     <a id="fb-chat-btn" href="#" aria-label="Chat Facebook"></a>
 
     <script>
@@ -491,6 +559,20 @@
         s1.setAttribute("crossorigin", "*");
         s0.parentNode.insertBefore(s1, s0);
       })();
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Cửa hàng TMDT",
+        "url": "https://example.com/",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://example.com/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
     </script>
 
     <!-- JavaScript Libraries -->

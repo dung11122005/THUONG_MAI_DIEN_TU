@@ -79,7 +79,7 @@ public class ItemController {
         // Lấy product theo id (nếu cần, nhưng thường pr đã đầy đủ)
         Optional<Product> optionalProduct = productService.fetchProductById(pr.getId());
         Product prs = optionalProduct.orElse(pr); // fallback dùng pr nếu không có
-        List<Comment> comments = prs.getComments(); // trả về null hoặc empty list
+        List<Comment> comments = this.commentService.getcmtByproduct(prs.getId()); // trả về null hoặc empty list
     
         // Lấy danh sách sản phẩm bán chạy và carousel
         List<Product> listProductBest = orderService.fetchBestSellingProductPage();
