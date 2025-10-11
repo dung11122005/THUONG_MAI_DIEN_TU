@@ -17,12 +17,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.example.tmdt.service.CustomUserDetailsService;
+import com.example.tmdt.service.OtpService;
 import com.example.tmdt.service.UploadService;
 import com.example.tmdt.service.UserService;
 import com.example.tmdt.service.userinfo.CustomOAuth2UserService;
 
 import jakarta.servlet.DispatcherType;
-
 
 @Configuration
 @EnableMethodSecurity(securedEnabled = true)
@@ -33,6 +33,13 @@ public class SecurityConfiguration {
 
     @Autowired
     private UploadService uploadService;
+    
+    // ...existing code...
+
+// ...existing code...
+    // thêm field OtpService để sử dụng trong bean không tham số
+    @Autowired
+    private OtpService otpService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -53,9 +60,10 @@ public class SecurityConfiguration {
         return authProvider;
     }
 
+    // CHANGED: bean không tham số, dùng các field đã @Autowired
     @Bean
     public AuthenticationSuccessHandler customSuccessHandler() {
-        return new CustomSuccessHandler(); // bạn đã định nghĩa class này
+        return new CustomSuccessHandler(this.userService, this.otpService);
     }
 
     @Bean
@@ -63,7 +71,7 @@ public class SecurityConfiguration {
         return new CustomOAuth2UserService(userService, uploadService);
     }
 
-
+// ...existing code...
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
             UserService userService,
@@ -75,7 +83,7 @@ public class SecurityConfiguration {
                             DispatcherType.INCLUDE)
                     .permitAll()
                     .requestMatchers("/", "/register", "/products", "/product/**",
-                            "/client/**", "/css/**", "/js/**", "/images/**", "/uploads/**", "/sitemap.xml", "/robots.txt") // https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html#match-requests
+                            "/client/**", "/css/**", "/js/**", "/images/**", "/uploads/**","/news/**", "/sitemap.xml", "/robots.txt") // https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html#match-requests
                     .permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .requestMatchers("/shipped/**").hasAnyRole("SHIPPED", "ADMIN")
@@ -120,6 +128,7 @@ public class SecurityConfiguration {
         return http.build();
     }
 
+// ...existing code...
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http,
                                                    AuthenticationProvider authenticationProvider) throws Exception {

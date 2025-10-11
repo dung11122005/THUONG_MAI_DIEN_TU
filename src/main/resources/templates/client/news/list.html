@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tin tức - Laptopshop</title>
+    <link rel="icon" type="image/png" href="client/img/iconLaptopShop.png" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icon Font Stylesheet -->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <!-- Libraries Stylesheet -->
+    <link href="/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+    <link
+      href="/client/lib/owlcarousel/assets/owl.carousel.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/client/css/bootstrap.min.css" rel="stylesheet" />
+
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+    <!-- Template Stylesheet -->
+    <link href="/client/css/style.css" rel="stylesheet" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .news-item {
+        transition: box-shadow 0.15s ease;
+      }
+      .news-item:hover {
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      }
+      .news-description {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Spinner Start -->
+    <div
+      id="spinner"
+      class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center"
+    >
+      <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+    <!-- Spinner End -->
+    <div th:replace="client/layout/header"></div>
+
+    <!-- News List Start -->
+    <div style="margin-top: 70px" class="container-fluid py-5">
+      <div class="container py-5">
+        <div class="row g-4">
+          <div class="col-12 mb-3">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  Tin tức
+                </li>
+              </ol>
+            </nav>
+          </div>
+
+          <div
+            class="col-12 mb-3 d-flex align-items-center justify-content-between"
+          >
+            <h3 class="mb-0">
+              Tin tức - <span th:text="${source}">source</span>
+            </h3>
+            <div>
+              <a
+                class="btn btn-outline-secondary btn-sm"
+                th:href="@{/news(source='technology')}"
+                >Công nghệ</a
+              >
+              <a
+                class="btn btn-outline-secondary btn-sm"
+                th:href="@{/news(source='vnexpress')}"
+                >VnExpress</a
+              >
+              <a
+                class="btn btn-outline-secondary btn-sm"
+                th:href="@{/news(source='dantri')}"
+                >Dân trí</a
+              >
+            </div>
+          </div>
+
+          <!-- Filter form -->
+          <div class="col-12 mb-4">
+            <form
+              class="row g-2 align-items-center"
+              method="get"
+              th:action="@{/news}"
+            >
+              <input type="hidden" name="source" th:value="${source}" />
+              <div class="col-auto" style="flex: 1">
+                <input
+                  class="form-control"
+                  type="search"
+                  name="q"
+                  th:value="${q}"
+                  placeholder="Tìm kiếm tiêu đề hoặc mô tả..."
+                />
+              </div>
+              <div class="col-auto form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="hasImage"
+                  name="hasImage"
+                  value="true"
+                  th:checked="${hasImage}"
+                />
+                <label class="form-check-label" for="hasImage"
+                  >Chỉ có hình</label
+                >
+              </div>
+              <div class="col-auto">
+                <input
+                  class="form-control"
+                  type="date"
+                  name="from"
+                  th:value="${from}"
+                />
+              </div>
+              <div class="col-auto">
+                <input
+                  class="form-control"
+                  type="date"
+                  name="to"
+                  th:value="${to}"
+                />
+              </div>
+              <div class="col-auto">
+                <select class="form-select" name="limit" th:value="${limit}">
+                  <option th:value="10">10</option>
+                  <option th:value="20" selected>20</option>
+                  <option th:value="50">50</option>
+                </select>
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-primary">Lọc</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="col-12">
+            <div th:if="${#lists.isEmpty(newsList)}" class="alert alert-info">
+              Không có tin nào phù hợp.
+            </div>
+
+            <ul class="list-unstyled">
+              <li
+                th:each="n : ${newsList}"
+                class="media mb-3 p-3 border rounded news-item d-flex"
+                style="align-items: flex-start"
+              >
+                <div
+                  style="
+                    width: 160px;
+                    height: 110px;
+                    overflow: hidden;
+                    flex: 0 0 160px;
+                    margin-right: 18px;
+                  "
+                >
+                  <img
+                    th:if="${n.imageUrl != null}"
+                    th:src="${n.imageUrl}"
+                    alt=""
+                    style="
+                      width: 100%;
+                      height: 100%;
+                      object-fit: cover;
+                      border-radius: 6px;
+                    "
+                  />
+                  <div
+                    th:if="${n.imageUrl == null}"
+                    style="
+                      width: 100%;
+                      height: 100%;
+                      background: #f5f5f5;
+                      border-radius: 6px;
+                    "
+                  ></div>
+                </div>
+
+                <div class="media-body" style="min-width: 0">
+                  <a
+                    th:href="${n.link}"
+                    th:text="${n.title}"
+                    target="_blank"
+                    class="h5 d-block text-dark mb-1"
+                    style="text-decoration: none"
+                  ></a>
+                  <div
+                    class="text-muted small mb-2"
+                    th:text="${n.publishedDate != null ? #dates.format(n.publishedDate,'dd/MM/yyyy HH:mm') : ''}"
+                  ></div>
+                  <p
+                    th:utext="${n.description}"
+                    class="mb-0 text-muted news-description"
+                  ></p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- News List End -->
+
+    <div th:replace="client/layout/footer"></div>
+
+    <!-- Back to Top -->
+    <a
+      href="#"
+      class="btn btn-primary border-3 border-primary rounded-circle back-to-top"
+      ><i class="fa fa-arrow-up"></i
+    ></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/client/lib/easing/easing.min.js"></script>
+    <script src="/client/lib/waypoints/waypoints.min.js"></script>
+    <script src="/client/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/client/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="/client/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
+  </body>
+</html>
