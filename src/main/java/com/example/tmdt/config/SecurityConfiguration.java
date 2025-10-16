@@ -82,7 +82,7 @@ public class SecurityConfiguration {
                     .dispatcherTypeMatchers(DispatcherType.FORWARD,
                             DispatcherType.INCLUDE)
                     .permitAll()
-                    .requestMatchers("/", "/register", "/products", "/product/**",
+                    .requestMatchers("/", "/register", "/products", "/product/**","/verify-otp/**", "/resend-otp/**", "/api/sms-test/**",
                             "/client/**", "/css/**", "/js/**", "/images/**", "/uploads/**","/news/**", "/sitemap.xml", "/robots.txt") // https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html#match-requests
                     .permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")

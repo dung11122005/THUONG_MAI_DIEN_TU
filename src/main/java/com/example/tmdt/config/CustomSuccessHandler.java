@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -48,7 +47,6 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         throw new IllegalStateException();
     }
 
-    // chỉ xóa attribute exception (không populate session user ở đây nếu dùng OTP)
     protected void clearAuthenticationAttributes(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) {
@@ -57,77 +55,49 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
     }
 
-    // populate session user attributes (gọi khi login hoàn tất / sau verify OTP)
-    protected void populateSessionAttributes(HttpServletRequest request, User user) {
-        HttpSession session = request.getSession();
-        if (user != null) {
-            session.setAttribute("fullName", user.getFullName());
-            session.setAttribute("avatar", user.getAvatar());
-            session.setAttribute("address", user.getAddress());
-            session.setAttribute("phone", user.getPhone());
-            session.setAttribute("id", user.getId());
-            session.setAttribute("email", user.getEmail());
-            session.setAttribute("listOrder", this.userService.getOrdersSortedById(user));
-            int sum = user.getCart() == null ? 0 : user.getCart().getSum();
-            session.setAttribute("sum", sum);
-        }
-    }
-
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    private String generateDevOtp() {
-        Random r = new Random();
-        int num = 100000 + r.nextInt(900000);
-        return String.valueOf(num);
+    // Trong phương thức onAuthenticationSuccess
+
+@Override
+public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+        Authentication authentication) throws IOException, ServletException {
+    String targetUrl = determineTargetUrl(authentication);
+
+    if (response.isCommitted()) {
+        return;
     }
 
-    @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-            Authentication authentication) throws IOException, ServletException {
-        String targetUrl = determineTargetUrl(authentication);
+    boolean isAdmin = authentication.getAuthorities().stream()
+            .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
 
-        if (response.isCommitted()) {
-            return;
-        }
+    String email = authentication.getName();
+    User user = this.userService.getUserByEmail(email);
 
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
-
-        String email = authentication.getName();
-        User user = this.userService.getUserByEmail(email);
-
-        if (isAdmin) {
-            populateSessionAttributes(request, user);
-            clearAuthenticationAttributes(request);
-            redirectStrategy.sendRedirect(request, response, targetUrl);
-            return;
-        }
-
-        HttpSession session = request.getSession();
-        session.setAttribute("pendingUser", user);
-        session.setAttribute("targetUrlAfterOtp", targetUrl);
-
-        // Gọi Twilio rồi fallback gửi email bằng OtpService
-        String devOtp = null;
-        if (user != null) {
-            devOtp = otpService.sendOtpWithFallback(user.getPhone(), user.getEmail());
-        }
-
-        if (devOtp != null) {
-            // không gửi được OTP qua Twilio -> thông báo và tạo mã dev để test local (devOtp đã tạo ở OtpService)
-            String msg = "Không thể gửi OTP (kiểm tra Twilio hoặc số chưa được xác minh).";
-            session.setAttribute("otpSendError", msg);
-            session.setAttribute("devOtp", devOtp);
-            System.out.println("DEV OTP (for testing only): " + devOtp);
-        } else {
-            session.removeAttribute("otpSendError");
-            session.removeAttribute("devOtp");
-        }
-
+    if (isAdmin) {
+        // Admin không cần xác thực OTP
+        userService.populateUserSession(request.getSession(), user);
         clearAuthenticationAttributes(request);
-        redirectStrategy.sendRedirect(request, response, "/verify-otp");
+        redirectStrategy.sendRedirect(request, response, targetUrl);
+        return;
     }
 
+    HttpSession session = request.getSession();
+    session.setAttribute("pendingUser", user);
+    session.setAttribute("targetUrlAfterOtp", targetUrl);
+
+    // Gửi OTP qua email hoặc hiển thị cho dev
+    String devOtp = null;
+    if (user != null) {
+        devOtp = otpService.sendOtpWithFallback(user.getPhone(), user.getEmail());
+    }
+
+    // Lưu OTP vào session để hiển thị trong môi trường phát triển
+    if (devOtp != null) {
+        session.setAttribute("devOtp", devOtp);
+    }
+
+    clearAuthenticationAttributes(request);
+    redirectStrategy.sendRedirect(request, response, "/verify-otp");
 }
-
-
+}

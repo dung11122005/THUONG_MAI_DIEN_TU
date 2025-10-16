@@ -60,15 +60,21 @@ public class PaymentController {
                                Model model) {
         PaymentService service = this.paymentFactory.getProvider(provider);
         boolean success = service.verifyReturn(params);
-
-        String orderId = params.getOrDefault("vnp_TxnRef", params.get("orderId"));
-
+                            
+        // Sửa lại phần này để xử lý cả PayPal và VNPay
+        String orderId;
+        if ("paypal".equalsIgnoreCase(provider)) {
+            orderId = params.get("orderId"); // Lấy từ parameter đã được thêm vào URL
+        } else {
+            orderId = params.getOrDefault("vnp_TxnRef", params.get("orderId"));
+        }
+    
         if (success) {
             orderService.markAsPaid(Long.parseLong(orderId));
         } else {
             orderService.markAsFailed(Long.parseLong(orderId));
         }
-
+    
         model.addAttribute("success", success);
         model.addAttribute("orderId", orderId);
         return "client/cart/thanks";

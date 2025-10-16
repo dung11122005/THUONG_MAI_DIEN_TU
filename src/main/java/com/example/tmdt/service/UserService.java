@@ -15,6 +15,8 @@ import com.example.tmdt.domain.dto.RegisterDTO;
 import com.example.tmdt.repository.RoleRepository;
 import com.example.tmdt.repository.UserRepository;
 
+import jakarta.servlet.http.HttpSession;
+
 
 
 @Service
@@ -94,6 +96,22 @@ public class UserService {
 
     public long countUsers() {
         return this.userRepository.count();
+    }
+
+    // Thêm phương thức này vào class UserService
+
+    public void populateUserSession(HttpSession session, User user) {
+        if (user != null) {
+            session.setAttribute("fullName", user.getFullName());
+            session.setAttribute("avatar", user.getAvatar());
+            session.setAttribute("address", user.getAddress());
+            session.setAttribute("phone", user.getPhone());
+            session.setAttribute("id", user.getId());
+            session.setAttribute("email", user.getEmail());
+            session.setAttribute("listOrder", this.getOrdersSortedById(user));
+            int sum = user.getCart() == null ? 0 : user.getCart().getSum();
+            session.setAttribute("sum", sum);
+        }
     }
 
 }

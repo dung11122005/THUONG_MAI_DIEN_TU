@@ -38,6 +38,23 @@
           height: 100%;
         }
       }
+      .resend-link {
+        text-decoration: none;
+        color: #4285f4;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .resend-link:hover {
+        text-decoration: underline;
+      }
+      .dev-otp {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+        font-family: monospace;
+        border-left: 3px solid #20c997;
+      }
     </style>
 
     <section class="vh-100">
@@ -59,16 +76,22 @@
               </div>
 
               <div
-                th:if="${otpSendError != null}"
-                class="my-2"
-                style="color: orange"
+                th:if="${otpResent}"
+                class="alert alert-success"
+                role="alert"
+              >
+                Mã OTP mới đã được gửi. Vui lòng kiểm tra.
+              </div>
+
+              <div
+                th:if="${session.otpSendError != null}"
+                class="my-2 alert alert-warning"
                 th:text="${session.otpSendError}"
               ></div>
 
               <div
                 th:if="${error}"
-                class="my-2"
-                style="color: red"
+                class="my-2 alert alert-danger"
                 th:text="${error}"
               ></div>
 
@@ -93,6 +116,13 @@
                   autofocus
                 />
                 <label class="form-label">Mã OTP</label>
+              </div>
+
+              <!-- Thêm nút gửi lại OTP -->
+              <div class="text-center mb-3">
+                <a th:href="@{/resend-otp}" class="resend-link">
+                  <i class="fas fa-sync-alt me-1"></i> Gửi lại mã OTP
+                </a>
               </div>
 
               <input
@@ -160,8 +190,7 @@
           if (!document.getElementById("errorExpired")) {
             const div = document.createElement("div");
             div.id = "errorExpired";
-            div.style.color = "red";
-            div.className = "my-2";
+            div.className = "alert alert-danger my-2";
             div.textContent = "Mã OTP đã hết hạn. Vui lòng yêu cầu gửi lại.";
             form.insertBefore(div, form.firstChild);
           }
@@ -184,6 +213,14 @@
         }
 
         update();
+
+        // Reset timer when resending OTP
+        const resendLink = document.querySelector(".resend-link");
+        if (resendLink) {
+          resendLink.addEventListener("click", function () {
+            sessionStorage.removeItem(KEY);
+          });
+        }
 
         form.addEventListener("submit", function (e) {
           const now = Date.now();

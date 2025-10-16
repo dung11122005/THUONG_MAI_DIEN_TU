@@ -16,7 +16,7 @@
     <meta property="og:description" th:content="${product.shortDesc}" />
     <meta
       property="og:image"
-      th:content="@{'/uploads/product/' + ${product.image}}"
+      th:content="@{'https://laptopshop247.click/uploads/product/' + ${product.image}}"
     />
 
     <meta
@@ -32,7 +32,7 @@
     <meta name="twitter:description" content="[[${product.shortDesc}]]" />
     <meta
       name="twitter:image"
-      content="https://laptopshop247.click/uploads/product/[[${product.image}]]"
+      th:content="@{'https://laptopshop247.click/uploads/product/' + ${product.image}}"
     />
     <meta name="twitter:site" content="@LaptopshopVN" />
 
