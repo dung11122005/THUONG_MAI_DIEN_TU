@@ -13,7 +13,7 @@ COPY uploads ./uploads
 RUN mvn clean package -DskipTests
 
 # Run stage
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
 # Copy file jar từ stage build
