@@ -105,6 +105,16 @@
                 >
               </div>
 
+              <div th:if="${session.devOtp}" class="dev-otp mb-3">
+                <strong>OTP cho test:</strong> 
+                <span th:text="${session.devOtp}" style="font-weight: bold; color: #28a745;"></span>
+                <br>
+                <small class="text-muted">
+                  <i class="fas fa-info-circle"></i> 
+                  Đây là OTP test, chỉ hiển thị trong môi trường phát triển
+                </small>
+              </div>
+
               <div class="form-outline mb-4">
                 <input
                   id="otpInput"
