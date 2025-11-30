@@ -70,15 +70,15 @@ public class OtpService {
         // }
         
         // Nếu gửi SMS thất bại hoặc đang trong môi trường dev, gửi qua email
-        if ((!sent || "dev".equals(environment)) && email != null && !email.isEmpty()) {
-            try {
-                sendOtpEmail(email, otp);
-                System.out.println("OTP sent via email to: " + email);
-                sent = true;
-            } catch (Exception ex) {
-                System.err.println("Failed to send OTP via email: " + ex.getMessage());
-            }
-        }
+        // if ((!sent || "dev".equals(environment)) && email != null && !email.isEmpty()) {
+        //     try {
+        //         sendOtpEmail(email, otp);
+        //         System.out.println("OTP sent via email to: " + email);
+        //         sent = true;
+        //     } catch (Exception ex) {
+        //         System.err.println("Failed to send OTP via email: " + ex.getMessage());
+        //     }
+        // }
         
         // In ra console để kiểm tra trong môi trường phát triển
         System.out.println("===== DEV OTP INFORMATION =====");
@@ -91,14 +91,14 @@ public class OtpService {
     }
     
     // Gửi OTP qua email
-    private void sendOtpEmail(String email, String otp) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("Mã xác thực OTP từ Laptopshop");
-        message.setText("Mã xác thực OTP của bạn là: " + otp + 
-                        "\nMã có hiệu lực trong 3 phút.");
-        mailSender.send(message);
-    }
+    // private void sendOtpEmail(String email, String otp) {
+    //     SimpleMailMessage message = new SimpleMailMessage();
+    //     message.setTo(email);
+    //     message.setSubject("Mã xác thực OTP từ Laptopshop");
+    //     message.setText("Mã xác thực OTP của bạn là: " + otp + 
+    //                     "\nMã có hiệu lực trong 3 phút.");
+    //     mailSender.send(message);
+    // }
     
     // Các phương thức còn lại giữ nguyên
     public String generateOtp() {
