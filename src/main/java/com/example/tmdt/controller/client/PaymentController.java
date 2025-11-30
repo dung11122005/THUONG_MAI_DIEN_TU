@@ -5,7 +5,6 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -54,29 +53,74 @@ public class PaymentController {
         return "redirect:" + paymentUrl;
     }
 
-    @GetMapping("/thank/{provider}")
-    public String handleReturn(@PathVariable String provider,
-                               @RequestParam Map<String, String> params,
-                               Model model) {
-        PaymentService service = this.paymentFactory.getProvider(provider);
-        boolean success = service.verifyReturn(params);
+    // @GetMapping("/thank/{provider}")
+    // public String handleReturn(@PathVariable String provider,
+    //                            @RequestParam Map<String, String> params,
+    //                            Model model) {
+    //     PaymentService service = this.paymentFactory.getProvider(provider);
+    //     boolean success = service.verifyReturn(params);
                             
-        // Sửa lại phần này để xử lý cả PayPal và VNPay
-        String orderId;
-        if ("paypal".equalsIgnoreCase(provider)) {
-            orderId = params.get("orderId"); // Lấy từ parameter đã được thêm vào URL
-        } else {
-            orderId = params.getOrDefault("vnp_TxnRef", params.get("orderId"));
+    //     // Sửa lại phần này để xử lý cả PayPal và VNPay
+    //     String orderId;
+    //     if ("paypal".equalsIgnoreCase(provider)) {
+    //         orderId = params.get("orderId"); // Lấy từ parameter đã được thêm vào URL
+    //     } else {
+    //         orderId = params.getOrDefault("vnp_TxnRef", params.get("orderId"));
+    //     }
+    
+    //     if (success) {
+    //         orderService.markAsPaid(Long.parseLong(orderId));
+    //     } else {
+    //         orderService.markAsFailed(Long.parseLong(orderId));
+    //     }
+    
+    //     model.addAttribute("success", success);
+    //     model.addAttribute("orderId", orderId);
+    //     return "client/cart/thanks";
+    // }
+
+
+    @GetMapping("/thank/vnpay")
+    public String handleVnpayReturn(@RequestParam Map<String, String> params, Model model) {
+        boolean success = false;
+        try {
+            System.out.println("VNPAY RETURN PARAMS: " + params); // log params
+            PaymentService service = paymentFactory.getProvider("vnpay");
+            success = service.verifyReturn(params);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     
-        if (success) {
-            orderService.markAsPaid(Long.parseLong(orderId));
-        } else {
-            orderService.markAsFailed(Long.parseLong(orderId));
+        String orderId = params.get("vnp_TxnRef");
+        if (orderId != null) {
+            if (success) orderService.markAsPaid(Long.parseLong(orderId));
+            else orderService.markAsFailed(Long.parseLong(orderId));
         }
     
         model.addAttribute("success", success);
         model.addAttribute("orderId", orderId);
         return "client/cart/thanks";
     }
+    
+    @GetMapping("/thank/paypal")
+    public String handlePaypalReturn(@RequestParam Map<String, String> params, Model model) {
+        boolean success = false;
+        try {
+            PaymentService service = paymentFactory.getProvider("paypal");
+            success = service.verifyReturn(params);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+        String orderId = params.get("orderId");
+        if (orderId != null) {
+            if (success) orderService.markAsPaid(Long.parseLong(orderId));
+            else orderService.markAsFailed(Long.parseLong(orderId));
+        }
+    
+        model.addAttribute("success", success);
+        model.addAttribute("orderId", orderId);
+        return "client/cart/thanks";
+    }
+
 }
