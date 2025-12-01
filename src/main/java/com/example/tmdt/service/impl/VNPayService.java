@@ -79,12 +79,12 @@ public class VNPayService implements PaymentService{
 
     private String generateVNPayURL(double amountDouble, String paymentRef, String ip)
             throws UnsupportedEncodingException {
-
+            
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
         long amount = (long) amountDouble * 100;
-
+            
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", vnp_Version);
         vnp_Params.put("vnp_Command", vnp_Command);
@@ -97,23 +97,31 @@ public class VNPayService implements PaymentService{
         vnp_Params.put("vnp_Locale", "vn");
         vnp_Params.put("vnp_ReturnUrl", vnp_ReturnUrl);
         vnp_Params.put("vnp_IpAddr", ip);
-
-        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+            
+        // SỬA TIMEZONE - Dùng Asia/Ho_Chi_Minh thay vì Etc/GMT+7
+        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        formatter.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh")); // Quan trọng!
+            
         String vnp_CreateDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
-
-        cld.add(Calendar.MINUTE, 15);
+            
+        // Tăng thời gian expire lên 30 phút
+        cld.add(Calendar.MINUTE, 30);
         String vnp_ExpireDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
-
+            
+        // Log để debug
+        System.out.println("vnp_CreateDate: " + vnp_CreateDate);
+        System.out.println("vnp_ExpireDate: " + vnp_ExpireDate);
+            
         List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
         Collections.sort(fieldNames);
-
+            
         StringBuilder hashData = new StringBuilder();
         StringBuilder query = new StringBuilder();
         Iterator<String> itr = fieldNames.iterator();
-
+            
         while (itr.hasNext()) {
             String fieldName = itr.next();
             String fieldValue = vnp_Params.get(fieldName);
@@ -127,10 +135,14 @@ public class VNPayService implements PaymentService{
                 }
             }
         }
-
+    
         String vnp_SecureHash = hmacSHA512(secretKey, hashData.toString());
         query.append("&vnp_SecureHash=").append(vnp_SecureHash);
-        return vnp_PayUrl + "?" + query;
+        
+        String paymentUrl = vnp_PayUrl + "?" + query;
+        System.out.println("Payment URL: " + paymentUrl);
+        
+        return paymentUrl;
     }
 
     private String hmacSHA512(final String key, final String data) {
